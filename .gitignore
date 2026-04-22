@@ -1,0 +1,47 @@
+# Archivos de usuario
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Carpeta de Visual Studio
+.vs/
+
+# Resultados de compilación
+bin/
+obj/
+
+# Archivos de logs
+*.log
+
+# Archivos de cache
+*.cache
+*.pdb
+
+# Archivos generados
+*.vsidx
+
+# Rider / VS Code (opcional)
+.idea/
+.vscode/
+
+# Publicaciones
+publish/
+
+# Archivos de configuración local
+appsettings.Development.json
+
+# Certificados HTTPS de desarrollo
+*.pfx
+
+# NuGet
+*.nupkg
+packages/
+
+# Archivos temporales
+*.tmp
+*.temp
+
+# OS
+.DS_Store
+Thumbs.db
