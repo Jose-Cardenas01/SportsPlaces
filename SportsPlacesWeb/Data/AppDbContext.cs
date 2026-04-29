@@ -16,15 +16,15 @@ public partial class AppDbContext : DbContext
     {
     }
 
-    public virtual DbSet<Escenario> Escenarios { get; set; }
+    public virtual DbSet<Escenarios> Escenarios { get; set; }
 
-    public virtual DbSet<Notificacione> Notificaciones { get; set; }
+    public virtual DbSet<Notificaciones> Notificaciones { get; set; }
 
     public virtual DbSet<ReportesDano> ReportesDanos { get; set; }
 
-    public virtual DbSet<Reserva> Reservas { get; set; }
+    public virtual DbSet<Reservas> Reservas { get; set; }
 
-    public virtual DbSet<Sede> Sedes { get; set; }
+    public virtual DbSet<Sedes> Sedes { get; set; }
 
     public virtual DbSet<Usuario> Usuarios { get; set; }
 
@@ -34,7 +34,7 @@ public partial class AppDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Escenario>(entity =>
+        modelBuilder.Entity<Escenarios>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Escenari__3213E83F8C58B69A");
 
@@ -57,7 +57,7 @@ public partial class AppDbContext : DbContext
                 .HasConstraintName("FK_Espacio_Sedes");
         });
 
-        modelBuilder.Entity<Notificacione>(entity =>
+        modelBuilder.Entity<Notificaciones>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Notifica__3213E83FCCC02D59");
 
@@ -110,7 +110,7 @@ public partial class AppDbContext : DbContext
                 .HasConstraintName("FK_Reporte_Usuario");
         });
 
-        modelBuilder.Entity<Reserva>(entity =>
+        modelBuilder.Entity<Reservas>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Reservas__3213E83F22689D38");
 
@@ -139,7 +139,7 @@ public partial class AppDbContext : DbContext
                 .HasConstraintName("FK_Reserva_Usuario");
         });
 
-        modelBuilder.Entity<Sede>(entity =>
+        modelBuilder.Entity<Sedes>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Sedes__3213E83F0D49A02B");
 

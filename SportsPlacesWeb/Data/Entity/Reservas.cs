@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace SportsPlacesWeb.Data.Entity;
 
-public partial class Reserva
+public partial class Reservas
 {
     public int Id { get; set; }
 
@@ -19,7 +19,7 @@ public partial class Reserva
 
     public int SedesId { get; set; }
 
-    public virtual Escenario Espacio { get; set; } = null!;
+    public virtual Escenarios Espacio { get; set; } = null!;
 
     public virtual Usuario Usuario { get; set; } = null!;
 }
