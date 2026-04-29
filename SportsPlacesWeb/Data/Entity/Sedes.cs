@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace SportsPlacesWeb.Data.Entity;
 
-public partial class Sede
+public partial class Sedes
 {
     public int Id { get; set; }
 
@@ -11,5 +11,5 @@ public partial class Sede
 
     public string Direccion { get; set; } = null!;
 
-    public virtual ICollection<Escenario> Escenarios { get; set; } = new List<Escenario>();
+    public virtual ICollection<Escenarios> Escenarios { get; set; } = new List<Escenarios>();
 }

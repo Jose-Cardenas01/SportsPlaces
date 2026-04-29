@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace SportsPlacesWeb.Data.Entity;
 
-public partial class Notificacione
+public partial class Notificaciones
 {
     [Required]
     public required int Id { get; set; }

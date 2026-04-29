@@ -13,9 +13,9 @@ public partial class Usuario
 
     public string CorreoInstitucional { get; set; } = null!;
 
-    public virtual ICollection<Notificacione> Notificaciones { get; set; } = new List<Notificacione>();
+    public virtual ICollection<Notificaciones> Notificaciones { get; set; } = new List<Notificaciones>();
 
     public virtual ICollection<ReportesDano> ReportesDanos { get; set; } = new List<ReportesDano>();
 
-    public virtual ICollection<Reserva> Reservas { get; set; } = new List<Reserva>();
+    public virtual ICollection<Reservas> Reservas { get; set; } = new List<Reservas>();
 }

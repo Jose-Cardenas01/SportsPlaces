@@ -17,7 +17,7 @@ public partial class ReportesDano
 
     public int UsuarioId { get; set; }
 
-    public virtual Escenario Espacio { get; set; } = null!;
+    public virtual Escenarios Espacio { get; set; } = null!;
 
     public virtual Usuario Usuario { get; set; } = null!;
 }
