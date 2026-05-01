@@ -3,13 +3,13 @@ using System.Collections.Generic;
 
 namespace SportsPlacesWeb.Data.Entity;
 
-public partial class Sede
+public partial class Sedes : AuditBase
 {
-    public int Id { get; set; }
+    public Guid Id { get; set; }
 
     public string Nombre { get; set; } = null!;
 
     public string Direccion { get; set; } = null!;
 
-    public virtual ICollection<Escenario> Escenarios { get; set; } = new List<Escenario>();
+    public virtual ICollection<Escenarios> Escenarios { get; set; } = new List<Escenarios>();
 }
