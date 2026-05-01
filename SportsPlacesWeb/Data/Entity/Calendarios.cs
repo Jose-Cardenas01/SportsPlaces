@@ -5,7 +5,6 @@ namespace SportsPlacesWeb.Data.Entity
 {
     public class Calendarios : AuditBase
     {
-        public Guid Id { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         [Required]
         public required DateOnly Fecha { get; set; } = DateOnly.FromDateTime(DateTime.Now);
         [Required]

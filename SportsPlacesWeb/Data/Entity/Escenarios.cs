@@ -6,15 +6,12 @@ namespace SportsPlacesWeb.Data.Entity;
 
 public partial class Escenarios : AuditBase
 {
-    public Guid Id { get; set; }
-
     public string Nombre { get; set; } = null!;
 
     public EscenarioStatus Estado { get; set; } = EscenarioStatus.Disponible;
 
     //Foreign Key
     public Guid SedesId { get; set; }
-    public Guid CalendarioId { get; set; }
 
     //Navigator Propierty
     public virtual ICollection<ReportesDano> ReportesDanos { get; set; } = new List<ReportesDano>();

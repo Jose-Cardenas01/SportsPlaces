@@ -1,7 +1,10 @@
-﻿namespace SportsPlacesWeb.Data.Entity
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace SportsPlacesWeb.Data.Entity
 {
-    public interface AuditBase
+    public abstract class AuditBase
     {
+        [Key]
         public Guid Id { get; set; }
     }
 }

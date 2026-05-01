@@ -5,8 +5,6 @@ namespace SportsPlacesWeb.Data.Entity;
 
 public partial class Sedes : AuditBase
 {
-    public Guid Id { get; set; }
-
     public string Nombre { get; set; } = null!;
 
     public string Direccion { get; set; } = null!;

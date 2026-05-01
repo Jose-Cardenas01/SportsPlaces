@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using SportsPlacesWeb.Data.Entity;
+using SportsPlacesWeb.DTOs;
 
 namespace SportsPlacesWeb.AutoMapper
 {
@@ -6,7 +8,7 @@ namespace SportsPlacesWeb.AutoMapper
     {
         public MappingProfile()
         {
-            
+            CreateMap<Escenarios, EscenarioDTO>().ReverseMap();
         }
     }
 }

@@ -1,21 +1,36 @@
-﻿using SportsPlacesWeb.Data;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using SportsPlacesWeb.Data;
+using SportsPlacesWeb.Data.Entity;
 using SportsPlacesWeb.Services.Abstract;
 
 namespace SportsPlacesWeb.Services.Implementation
 {
-    public class GenericServices<T> : IGenericServices<T> where T : class
+    public class GenericServices<TEntity, TDTO> where TEntity : AuditBase
     {
         private readonly AppDbContext _context;
-        public T /*async Task<T> */ CreateAsync(T entity)
+        private readonly IMapper _map;
+        public GenericServices(AppDbContext context, IMapper map)
+        {
+            _context = context;
+            _map = map;
+        }
+        public async Task<TDTO> CreateAsync(TDTO dto) 
         {
             try
             {
-                if (entity is null)
+                if (dto is null)
                 {
-                    throw new ArgumentNullException(nameof(entity));
+                    throw new ArgumentNullException(nameof(dto));
                 }
 
-                return entity;
+                var entity = _map.Map<TEntity>(dto);
+                entity.Id = Guid.NewGuid();
+
+                await _context.AddAsync(entity);
+                await _context.SaveChangesAsync();
+
+                return dto;
             }
             catch
             {
@@ -23,22 +38,50 @@ namespace SportsPlacesWeb.Services.Implementation
             }
         }
 
-        public Task<T> DeleteAsync(Guid id)
+        public async Task DeleteAsync(Guid id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                bool exists = await _context.Set<TEntity>().AnyAsync(t => t.Id == id);
+                if (!exists)
+                {
+                    throw new Exception("El registro no existe");
+                }
+
+                var entity = await _context.Set<TEntity>().FindAsync(id);
+                _context.Remove(entity);
+                await _context.SaveChangesAsync();
+            }
+            catch
+            {
+                throw new Exception("Ha ocurrido un error");
+            }
         }
 
-        public Task<IEnumerable<T>> GetAllAsync()
+        public async Task<IEnumerable<TDTO>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            try
+            {
+                var list = await _context.Set<TEntity>().ToListAsync();
+                if (list.Count <= 0)
+                {
+                    throw new Exception("No se encontraron registros");
+                }
+
+                return _map.Map<IEnumerable<TDTO>>(list);
+            }
+            catch
+            {
+                throw new Exception("Ha ocurrido un error");
+            }
         }
 
-        public Task<IEnumerable<T>> GetByAsync(IQueryable<T> query)
+        public Task<IEnumerable<TDTO>> GetByAsync(IQueryable<TDTO> query)
         {
-            throw new NotImplementedException();
+
         }
 
-        public Task<T> UpdateAsync(Guid id)
+        public Task<TDTO> UpdateAsync(Guid id)
         {
             throw new NotImplementedException();
         }

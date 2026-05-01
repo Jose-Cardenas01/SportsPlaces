@@ -5,14 +5,13 @@ namespace SportsPlacesWeb.Data.Entity;
 
 public partial class Usuario : AuditBase
 {
-    public Guid Id { get; set; }
-
     public string Nombre { get; set; } = null!;
 
     public string TipoUsuario { get; set; } = null!;
 
     public string CorreoInstitucional { get; set; } = null!;
 
+    //Navigator Propierty
     public virtual ICollection<Notificaciones> Notificaciones { get; set; } = new List<Notificaciones>();
 
     public virtual ICollection<ReportesDano> ReportesDanos { get; set; } = new List<ReportesDano>();

@@ -116,16 +116,11 @@ public partial class AppDbContext : DbContext
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.EspacioId).HasColumnName("espacio_id");
-            entity.Property(e => e.Estado)
-                .HasMaxLength(50)
-                .IsUnicode(false)
-                .HasColumnName("estado");
             entity.Property(e => e.Fecha).HasColumnName("fecha");
             entity.Property(e => e.Hora)
                 .HasMaxLength(20)
                 .IsUnicode(false)
                 .HasColumnName("hora");
-            entity.Property(e => e.SedesId).HasColumnName("sedes_id");
             entity.Property(e => e.UsuarioId).HasColumnName("usuario_id");
 
             entity.HasOne(d => d.Espacio).WithMany(p => p.Reservas)
