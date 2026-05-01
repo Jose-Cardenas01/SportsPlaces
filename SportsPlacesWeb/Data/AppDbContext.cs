@@ -51,7 +51,7 @@ public partial class AppDbContext : DbContext
                 .HasColumnName("nombre");
             entity.Property(e => e.SedesId).HasColumnName("sedes_id");
 
-            entity.HasOne(d => d.Sedes).WithMany(p => p.Escenarios)
+            entity.HasOne(d => d.Sede).WithMany(p => p.Escenarios)
                 .HasForeignKey(d => d.SedesId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Espacio_Sedes");
@@ -171,6 +171,14 @@ public partial class AppDbContext : DbContext
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("tipo_usuario");
+        });
+
+        modelBuilder.Entity<Calendarios>(entity =>
+        {
+            entity.HasKey(c => c.Id);
+            entity.HasOne(e => e.Escenario)
+                  .WithOne(c => c.Calendario)
+                  .HasForeignKey<Calendarios>(c => c.IdEscenario);
         });
 
         OnModelCreatingPartial(modelBuilder);

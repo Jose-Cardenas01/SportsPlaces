@@ -11,6 +11,9 @@ namespace SportsPlacesWeb
                 option.UseSqlServer(builder.Configuration.GetConnectionString("MyConnectionString"))
             );
 
+            //AutoMapper
+            builder.Services.AddAutoMapper(typeof(Program).Assembly);
+
             return builder;
         }
     }

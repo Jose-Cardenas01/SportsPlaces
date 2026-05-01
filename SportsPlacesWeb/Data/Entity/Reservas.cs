@@ -3,13 +3,13 @@ using System.Collections.Generic;
 
 namespace SportsPlacesWeb.Data.Entity;
 
-public partial class Reservas
+public partial class Reservas : AuditBase
 {
-    public int Id { get; set; }
+    public Guid Id { get; set; }
 
-    public DateOnly Fecha { get; set; }
+    public DateOnly Fecha { get; set; } = new DateOnly(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
 
-    public string Hora { get; set; } = null!;
+    public TimeOnly Hora { get; set; } = new TimeOnly(DateTime.Now.Hour, DateTime.Now.Minute);
 
     public string Estado { get; set; } = null!;
 

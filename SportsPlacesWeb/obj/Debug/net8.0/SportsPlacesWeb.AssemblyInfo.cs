@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SportsPlacesWeb")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d2d305f2c246e0c921da967023a11ffb7cda890b")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1b0bc8bda4db09fbbc6098da54905ab24389d335")]
 [assembly: System.Reflection.AssemblyProductAttribute("SportsPlacesWeb")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SportsPlacesWeb")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

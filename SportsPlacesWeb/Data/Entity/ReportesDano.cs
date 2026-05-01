@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace SportsPlacesWeb.Data.Entity;
 
-public partial class ReportesDano
+public partial class ReportesDano : AuditBase
 {
-    public int Id { get; set; }
+    public Guid Id { get; set; }
 
     public string Estado { get; set; } = null!;
 
@@ -13,10 +13,12 @@ public partial class ReportesDano
 
     public byte[]? Evidencia { get; set; }
 
+    //FK
     public int EspacioId { get; set; }
 
     public int UsuarioId { get; set; }
 
+    //Navigator Propierty
     public virtual Escenarios Espacio { get; set; } = null!;
 
     public virtual Usuario Usuario { get; set; } = null!;

@@ -4,10 +4,10 @@ using System.ComponentModel.DataAnnotations;
 
 namespace SportsPlacesWeb.Data.Entity;
 
-public partial class Notificaciones
+public partial class Notificaciones : AuditBase
 {
     [Required]
-    public required int Id { get; set; }
+    public required Guid Id { get; set; }
     [Required]
     [MaxLength(500, ErrorMessage = "El {0} no puede exceder los {1} caracteres")]
     public required string Mensaje { get; set; } = null!;
@@ -15,7 +15,7 @@ public partial class Notificaciones
     public string? TipoNotificacion { get; set; }
     // FK
     [Required]
-    public required int UsuarioId { get; set; }
+    public required Guid UsuarioId { get; set; }
 
     // Navigation Property
     public virtual Usuario Usuario { get; set; } = null!;

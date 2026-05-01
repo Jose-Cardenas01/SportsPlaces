@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace SportsPlacesWeb.Data.Entity;
 
-public partial class Sedes
+public partial class Sedes : AuditBase
 {
-    public int Id { get; set; }
+    public Guid Id { get; set; }
 
     public string Nombre { get; set; } = null!;
 
