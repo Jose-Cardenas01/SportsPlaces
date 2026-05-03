@@ -6,7 +6,7 @@ using SportsPlacesWeb.Services.Abstract;
 
 namespace SportsPlacesWeb.Services.Implementation
 {
-    public class GenericServices<TEntity, TDTO> where TEntity : AuditBase
+    public class GenericServices<TEntity, TDTO> where TEntity : AuditBase 
     {
         private readonly AppDbContext _context;
         private readonly IMapper _map;
@@ -42,13 +42,12 @@ namespace SportsPlacesWeb.Services.Implementation
         {
             try
             {
-                bool exists = await _context.Set<TEntity>().AnyAsync(t => t.Id == id);
-                if (!exists)
+                var entity = await _context.Set<TEntity>().FindAsync(id);
+                if (entity is null)
                 {
                     throw new Exception("El registro no existe");
                 }
 
-                var entity = await _context.Set<TEntity>().FindAsync(id);
                 _context.Remove(entity);
                 await _context.SaveChangesAsync();
             }
@@ -76,14 +75,24 @@ namespace SportsPlacesWeb.Services.Implementation
             }
         }
 
-        public Task<IEnumerable<TDTO>> GetByAsync(IQueryable<TDTO> query)
+        public async Task UpdateAsync(TDTO dto, Guid id)
         {
+            try
+            {
+                var entity = await _context.Set<TEntity>().FindAsync(id);
+                if (entity is null)
+                {
+                    throw new Exception("El registro no existe");
+                }
 
-        }
-
-        public Task<TDTO> UpdateAsync(Guid id)
-        {
-            throw new NotImplementedException();
+                _map.Map(dto, entity);
+                _context.Entry(entity).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+            }
+            catch
+            {
+                throw new Exception("Ha ocurrido un error");
+            }
         }
     }
 }
