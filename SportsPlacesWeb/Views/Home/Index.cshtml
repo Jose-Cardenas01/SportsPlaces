@@ -1,30 +1,90 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+     ViewData["Title"] = "Home Page";
 }
+ 
+<h2>Calendario de estados del escenario</h2>
 
-<h2>Calendario</h2>
+<div class="row mb-3">
+    <div class="col-md-4">
+        <label for="sceneId" class="form-label">Escenario</label>
+        <select id="sceneId" class="form-select">
+            <option value="">Seleccione un escenario</option>
+            @foreach (var escenario in ViewBag.Escenarios)
+            {
+                <option value="@escenario.Id">@escenario.Nombre</option>
+            }
+        </select>
+    </div>
+    <div class="col-md-3">
+        <label for="startDate" class="form-label">Fecha inicio</label>
+        <input id="startDate" type="date" class="form-control" />
+    </div>
+    <div class="col-md-3">
+        <label for="endDate" class="form-label">Fecha fin</label>
+        <input id="endDate" type="date" class="form-control" />
+    </div>
+    <div class="col-md-2 d-flex align-items-end">
+        <button id="btnLoad" class="btn btn-primary w-100">Cargar</button>
+    </div>
+</div>
 
-<div id="calendar" style="height: 600px;"></div>
+<div id="calendar" style="height: 700px;"></div>
+ 
+ @section Scripts {
+     <script>
+         document.addEventListener('DOMContentLoaded', function () {
+            const calendarEl = document.getElementById('calendar');
+            const sceneIdInput = document.getElementById('sceneId');
+            const startDateInput = document.getElementById('startDate');
+            const endDateInput = document.getElementById('endDate');
+            const btnLoad = document.getElementById('btnLoad');
+ 
+            const today = new Date();
+            const plusSeven = new Date();
+            plusSeven.setDate(today.getDate() + 7);
+            startDateInput.value = today.toISOString().split('T')[0];
+            endDateInput.value = plusSeven.toISOString().split('T')[0];
 
-@section Scripts {
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            console.log("FullCalendar:", typeof FullCalendar);
+            const calendar = new FullCalendar.Calendar(calendarEl, {
+                 initialView: 'timeGridWeek',
+                 allDaySlot: false,
+                 slotMinTime: '06:00:00',
+                 slotMaxTime: '22:00:00',
+                 events: []
+             });
+ 
+             calendar.render();
 
-            var calendarEl = document.getElementById('calendar');
+            function loadStatusScene() {
+                const id = sceneIdInput.value;
+                const start = startDateInput.value;
+                const end = endDateInput.value;
 
-            var calendar = new FullCalendar.Calendar(calendarEl, {
-                initialView: 'timeGridWeek',
-                events : 
-                {
-                    url: '/Home/GetReservas',
-                    method: 'GET',
-                    failure: function() {
-                        alert('No se encontraron reservas');
+                if (!id || !start || !end) {
+                    alert('Debe seleccionar escenario y rango de fechas.');
+                    return;
                 }
-            });
 
-            calendar.render();
-        });
-    </script>
+                calendar.removeAllEvents();
+
+                fetch(`/Home/GetStatusScene?id=${encodeURIComponent(id)}&start=${encodeURIComponent(start)}&end=${encodeURIComponent(end)}`)
+                    .then(r => {
+                        if (!r.ok) {
+                            throw new Error('No fue posible consultar el estado del escenario.');
+                        }
+                        return r.json();
+                    })
+                    .then(events => {
+                        calendar.addEventSource(events);
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        alert('No se pudieron cargar los estados del escenario.');
+                    });
+            }
+
+            btnLoad.addEventListener('click', loadStatusScene);
+         });
+     </script>
+\ No newline at end of file
 }

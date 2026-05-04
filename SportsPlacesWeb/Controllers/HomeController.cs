@@ -3,7 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SportsPlacesWeb.Data;
 using SportsPlacesWeb.Data.Entity;
+using SportsPlacesWeb.Enums;
 using SportsPlacesWeb.Models;
+using SportsPlacesWeb.Services.Implementation;
 
 namespace SportsPlacesWeb.Controllers
 {
@@ -18,8 +20,14 @@ namespace SportsPlacesWeb.Controllers
             _context = context;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
+            var escenarios = await _context.Escenarios
+                .OrderBy(e => e.Nombre)
+                .Select(e => new { e.Id, e.Nombre })
+                .ToListAsync();
+
+            ViewBag.Escenarios = escenarios;
             return View();
         }
 
@@ -45,15 +53,19 @@ namespace SportsPlacesWeb.Controllers
                     TimeOnly endblock = time.AddMinutes(60);
 
                     Reservas? reserva = reservas.FirstOrDefault(r => r.Fecha == date && r.HoraInicio >= startblock && r.HoraFin <= endblock);
-                   
+
+                    var startDateTime = date.ToDateTime(startblock).ToString("yyyy-MM-ddTHH:mm:ss");
+                    var endDateTime = date.ToDateTime(endblock).ToString("yyyy-MM-ddTHH:mm:ss");
+
                     if (reserva is null)
                     {
                         eventos.Add(new
                         {
                             id = 0,
-                            title = "Disponible",
-                            start = startblock,
-                            end = endblock,
+                            title = EscenarioStatus.Disponible.ToString(),
+                            start = startDateTime,
+                            end = endDateTime,
+                            color = StatusColor.GetColorByStatus(1)
                         });
                     }
                     else
@@ -61,9 +73,10 @@ namespace SportsPlacesWeb.Controllers
                         eventos.Add(new
                         {
                             id = reserva.Id,
-                            title = reserva.Status,
-                            start = startblock,
-                            end = endblock,
+                            title = reserva.Status.ToString(),
+                            start = startDateTime,
+                            end = endDateTime,
+                            color = StatusColor.GetColorByStatus((int)reserva.Status)
                         });
                     }
 

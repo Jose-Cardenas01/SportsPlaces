@@ -2,7 +2,7 @@
 {
     public enum ReservasStatus
     {
-        PracticaDeportiva = 1,
-        PracticaLibre = 2
+        PracticaDeportiva = 4,
+        PracticaLibre = 5
     }
 }
