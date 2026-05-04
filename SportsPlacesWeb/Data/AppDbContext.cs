@@ -20,7 +20,8 @@ public partial class AppDbContext : DbContext
 
     public virtual DbSet<Notificacione> Notificaciones { get; set; }
 
-    public virtual DbSet<ReportesDano> ReportesDanos { get; set; }
+    public DbSet<ReporteDano> ReportesDanos { get; set; }
+
 
     public virtual DbSet<Reserva> Reservas { get; set; }
 

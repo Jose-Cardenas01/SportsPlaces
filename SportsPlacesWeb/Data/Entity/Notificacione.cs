@@ -1,19 +1,14 @@
-﻿using System;
+﻿using SportsPlacesWeb.Data.Entity;
+using System;
 using System.Collections.Generic;
-
-namespace SportsPlacesWeb.Data.Entity;
-
-public partial class Notificacione
+public partial class Notificacion
 {
     public int Id { get; set; }
-
     public string Mensaje { get; set; } = null!;
-
-    public DateTime? FechaEnvio { get; set; }
-
+    public DateOnly Fecha { get; set; }
     public int UsuarioId { get; set; }
 
-    public string? TipoNotificacion { get; set; }
-
+    // Propiedad de navegación
     public virtual Usuario Usuario { get; set; } = null!;
 }
+
