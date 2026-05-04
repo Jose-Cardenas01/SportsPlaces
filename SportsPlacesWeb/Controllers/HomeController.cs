@@ -65,7 +65,8 @@ namespace SportsPlacesWeb.Controllers
                             title = EscenarioStatus.Disponible.ToString(),
                             start = startDateTime,
                             end = endDateTime,
-                            color = StatusColor.GetColorByStatus(1)
+                            color = StatusColor.GetColorByStatus(1),
+                            backgroundColor = StatusColor.GetColorByStatus(1)
                         });
                     }
                     else
@@ -76,7 +77,8 @@ namespace SportsPlacesWeb.Controllers
                             title = reserva.Status.ToString(),
                             start = startDateTime,
                             end = endDateTime,
-                            color = StatusColor.GetColorByStatus((int)reserva.Status)
+                            color = StatusColor.GetColorByStatus((int)reserva.Status),
+                            backgroundColor = StatusColor.GetColorByStatus((int)reserva.Status)
                         });
                     }
 
