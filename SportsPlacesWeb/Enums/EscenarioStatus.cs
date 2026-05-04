@@ -4,7 +4,6 @@
     {
         Disponible = 1,
         Ocupado = 2,
-        Practica = 3,
-        Mantenimiento = 4
+        Mantenimiento = 3
     }
 }

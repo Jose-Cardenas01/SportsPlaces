@@ -117,10 +117,14 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.EspacioId).HasColumnName("espacio_id");
             entity.Property(e => e.Fecha).HasColumnName("fecha");
-            entity.Property(e => e.Hora)
+            entity.Property(e => e.HoraInicio)
                 .HasMaxLength(20)
                 .IsUnicode(false)
-                .HasColumnName("hora");
+                .HasColumnName("hora_inicio");
+            entity.Property(e => e.HoraFin)
+                .HasMaxLength(20)
+                .IsUnicode(false)
+                .HasColumnName("hora_fin");
             entity.Property(e => e.UsuarioId).HasColumnName("usuario_id");
 
             entity.HasOne(d => d.Espacio).WithMany(p => p.Reservas)

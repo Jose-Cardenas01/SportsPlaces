@@ -14,7 +14,14 @@
             var calendarEl = document.getElementById('calendar');
 
             var calendar = new FullCalendar.Calendar(calendarEl, {
-                initialView: 'timeGridWeek'
+                initialView: 'timeGridWeek',
+                events : 
+                {
+                    url: '/Home/GetReservas',
+                    method: 'GET',
+                    failure: function() {
+                        alert('No se encontraron reservas');
+                }
             });
 
             calendar.render();
