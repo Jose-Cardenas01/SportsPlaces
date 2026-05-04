@@ -1,0 +1,90 @@
+* [33mcommit 1b0bc8bda4db09fbbc6098da54905ab24389d335[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mTest[m[33m, [m[1;31morigin/Test[m[33m)[m
+[31m|[m Author: Jose Cardenas <josecardenas0045@gmail.com>
+[31m|[m Date:   Tue Apr 28 20:16:07 2026 -0500
+[31m|[m 
+[31m|[m     Download AutoMapper
+[31m|[m 
+* [33mcommit d2d305f2c246e0c921da967023a11ffb7cda890b[m
+[31m|[m Author: Jose Cardenas <josecardenas0045@gmail.com>
+[31m|[m Date:   Tue Apr 28 20:07:16 2026 -0500
+[31m|[m 
+[31m|[m     Merge with master
+[31m|[m 
+* [33mcommit c5bd20261e4e97d12b1b4edfe27a54d598183189[m
+[31m|[m Author: Sala K 401 <salak401@salasfr.itm.edu.co>
+[31m|[m Date:   Mon Apr 27 11:57:56 2026 -0500
+[31m|[m 
+[31m|[m     Entity Calendar
+[31m|[m 
+* [33mcommit 4b73a1c6d106b9207ec5627abcc7792b684a9164[m
+[31m|[m Author: Jose Cardenas <josecardenas0045@gmail.com>
+[31m|[m Date:   Tue Apr 28 19:59:26 2026 -0500
+[31m|[m 
+[31m|[m     Assemblyn
+[31m|[m   
+*   [33mcommit be0ba32ea8dd8f038a1abba4163856188bf6285c[m
+[32m|[m[33m\[m  Merge: 14cbd54 111af86
+[32m|[m [33m|[m Author: Jose Cardenas <josecardenas0045@gmail.com>
+[32m|[m [33m|[m Date:   Tue Apr 28 19:56:45 2026 -0500
+[32m|[m [33m|[m 
+[32m|[m [33m|[m     Merge into Test
+[32m|[m [33m|[m 
+[32m|[m * [33mcommit 111af86ed49605c5e70698cad676c5fc8d8c151d[m[33m ([m[1;31morigin/Dev-Jose[m[33m, [m[1;32mDev-Jose[m[33m)[m
+[32m|[m [33m|[m Author: Jose Cardenas <josecardenas0045@gmail.com>
+[32m|[m [33m|[m Date:   Tue Apr 28 19:43:42 2026 -0500
+[32m|[m [33m|[m 
+[32m|[m [33m|[m     Services Generic
+[32m|[m [33m|[m 
+[32m|[m * [33mcommit 5d058d4431bbb3a8838c0b67a6ba43964bf927ee[m
+[32m|[m [33m|[m Author: Jose Cardenas <josecardenas0045@gmail.com>
+[32m|[m [33m|[m Date:   Thu Apr 23 19:35:17 2026 -0500
+[32m|[m [33m|[m 
+[32m|[m [33m|[m     adjustmen in notificaciones
+[32m|[m [33m|[m 
+* [33m|[m [33mcommit 14cbd5424114b51f7a125dd0a38d3bb1fd722b34[m
+[33m|[m[33m/[m  Author: Jose Cardenas <josecardenas0045@gmail.com>
+[33m|[m   Date:   Tue Apr 28 19:48:53 2026 -0500
+[33m|[m   
+[33m|[m       Adjusment
+[33m|[m 
+* [33mcommit be73eac01cdc9eca0cec8461318c82bd3fef94c1[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmain[m[33m)[m
+[33m|[m Author: Jose Cardenas <josecardenas0045@gmail.com>
+[33m|[m Date:   Thu Apr 23 18:42:45 2026 -0500
+[33m|[m 
+[33m|[m     Implementation DbContex and create AppBuilderConfig for app configuration
+[33m|[m 
+* [33mcommit ccd6ce3062648270e10782e0429c18bb6a6a3d2f[m
+[33m|[m Author: Jose Cardenas <josecardenas0045@gmail.com>
+[33m|[m Date:   Wed Apr 22 15:18:02 2026 -0500
+[33m|[m 
+[33m|[m     Update Connection chain
+[33m|[m 
+* [33mcommit 432e6f05baa97ab4e9a22ffb05ae59e43c975ccc[m
+[33m|[m Author: Jose Cardenas <josecardenas0045@gmail.com>
+[33m|[m Date:   Wed Apr 22 15:15:37 2026 -0500
+[33m|[m 
+[33m|[m     Connection Chain
+[33m|[m 
+* [33mcommit bc31cae712954d8b8d95df873ac59ddd6ee156e6[m
+[33m|[m Author: Jose Cardenas <josecardenas0045@gmail.com>
+[33m|[m Date:   Wed Apr 22 14:54:49 2026 -0500
+[33m|[m 
+[33m|[m     architecture pattern
+[33m|[m 
+* [33mcommit 1fa3f81f47930a7d5c1a68f4e00a43538a84efed[m
+[33m|[m Author: Jose Cardenas <josecardenas0045@gmail.com>
+[33m|[m Date:   Wed Apr 22 14:48:21 2026 -0500
+[33m|[m 
+[33m|[m     Architecture pattern
+[33m|[m 
+* [33mcommit 1d01ec2f71eefe06cf33845ca03edf2625630bc6[m
+  Author: Jose-Cardenas01 <josecardenas0045@gmail.com>
+  Date:   Wed Apr 22 14:20:24 2026 -0500
+  
+      Initial commit
+  
+* [33mcommit f7b94b0b766699f341a4300d893bc984ca160841[m[33m ([m[1;31morigin/master[m[33m)[m
+  Author: Sala K 401 <salak401@salasfr.itm.edu.co>
+  Date:   Mon Apr 27 11:57:56 2026 -0500
+  
+      Entity Calendar

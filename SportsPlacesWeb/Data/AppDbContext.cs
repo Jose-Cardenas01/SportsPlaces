@@ -16,16 +16,17 @@ public partial class AppDbContext : DbContext
     {
     }
 
-    public virtual DbSet<Escenario> Escenarios { get; set; }
+    public virtual DbSet<Escenarios> Escenarios { get; set; }
 
-    public virtual DbSet<Notificacione> Notificaciones { get; set; }
+    public DbSet<Notificacion> Notificaciones { get; set; }
+
 
     public DbSet<ReporteDano> ReportesDanos { get; set; }
 
 
-    public virtual DbSet<Reserva> Reservas { get; set; }
+    public virtual DbSet<Reservas> Reservas { get; set; }
 
-    public virtual DbSet<Sede> Sedes { get; set; }
+    public virtual DbSet<Sedes> Sedes { get; set; }
 
     public virtual DbSet<Usuario> Usuarios { get; set; }
 
@@ -35,7 +36,7 @@ public partial class AppDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Escenario>(entity =>
+        modelBuilder.Entity<Escenarios>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Escenari__3213E83F8C58B69A");
 
@@ -52,28 +53,22 @@ public partial class AppDbContext : DbContext
                 .HasColumnName("nombre");
             entity.Property(e => e.SedesId).HasColumnName("sedes_id");
 
-            entity.HasOne(d => d.Sedes).WithMany(p => p.Escenarios)
+            entity.HasOne(d => d.Sede).WithMany(p => p.Escenarios)
                 .HasForeignKey(d => d.SedesId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Espacio_Sedes");
         });
 
-        modelBuilder.Entity<Notificacione>(entity =>
+        modelBuilder.Entity<Notificacion>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Notifica__3213E83FCCC02D59");
-
+            entity.HasKey(e => e.Id).HasName("PK__Notifica__3213E83F...");
             entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.FechaEnvio)
-                .HasDefaultValueSql("(getdate())")
-                .HasColumnType("datetime")
+            entity.Property(e => e.Fecha)
+                .HasColumnType("date")
                 .HasColumnName("fecha_envio");
             entity.Property(e => e.Mensaje)
                 .IsUnicode(false)
                 .HasColumnName("mensaje");
-            entity.Property(e => e.TipoNotificacion)
-                .HasMaxLength(50)
-                .IsUnicode(false)
-                .HasColumnName("tipo_notificacion");
             entity.Property(e => e.UsuarioId).HasColumnName("usuario_id");
 
             entity.HasOne(d => d.Usuario).WithMany(p => p.Notificaciones)
@@ -82,36 +77,42 @@ public partial class AppDbContext : DbContext
                 .HasConstraintName("FK_Notificacion_Usuario");
         });
 
-        modelBuilder.Entity<ReportesDano>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("PK__Reportes__3213E83F8E266D26");
 
+
+        modelBuilder.Entity<ReporteDano>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Reportes__3213E83F...");
             entity.ToTable("ReportesDano");
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.Descripcion)
                 .IsUnicode(false)
                 .HasColumnName("descripcion");
-            entity.Property(e => e.EspacioId).HasColumnName("espacio_id");
-            entity.Property(e => e.Estado)
-                .HasMaxLength(50)
-                .IsUnicode(false)
-                .HasColumnName("estado");
+            entity.Property(e => e.Fecha)
+                .HasColumnType("date")
+                .HasColumnName("fecha");
             entity.Property(e => e.Evidencia).HasColumnName("evidencia");
             entity.Property(e => e.UsuarioId).HasColumnName("usuario_id");
+            entity.Property(e => e.EscenarioId).HasColumnName("escenario_id");
+            entity.Property(e => e.SedeId).HasColumnName("sede_id");
 
-            entity.HasOne(d => d.Espacio).WithMany(p => p.ReportesDanos)
-                .HasForeignKey(d => d.EspacioId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Reporte_Espacio");
-
-            entity.HasOne(d => d.Usuario).WithMany(p => p.ReportesDanos)
+            entity.HasOne(d => d.Usuario).WithMany(p => p.ReportesDano)
                 .HasForeignKey(d => d.UsuarioId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Reporte_Usuario");
+                .HasConstraintName("FK_ReporteDano_Usuario");
+
+            entity.HasOne(d => d.Escenario).WithMany(p => p.ReportesDano)
+                .HasForeignKey(d => d.EscenarioId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ReporteDano_Escenario");
+
+            entity.HasOne(d => d.Sede).WithMany(p => p.ReportesDano)
+                .HasForeignKey(d => d.SedeId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ReporteDano_Sede");
         });
 
-        modelBuilder.Entity<Reserva>(entity =>
+        modelBuilder.Entity<Reservas>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Reservas__3213E83F22689D38");
 
@@ -140,7 +141,7 @@ public partial class AppDbContext : DbContext
                 .HasConstraintName("FK_Reserva_Usuario");
         });
 
-        modelBuilder.Entity<Sede>(entity =>
+        modelBuilder.Entity<Sedes>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Sedes__3213E83F0D49A02B");
 
@@ -172,6 +173,14 @@ public partial class AppDbContext : DbContext
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("tipo_usuario");
+        });
+
+        modelBuilder.Entity<Calendarios>(entity =>
+        {
+            entity.HasKey(c => c.Id);
+            entity.HasOne(e => e.Escenario)
+                  .WithOne(c => c.Calendario)
+                  .HasForeignKey<Calendarios>(c => c.IdEscenario);
         });
 
         OnModelCreatingPartial(modelBuilder);

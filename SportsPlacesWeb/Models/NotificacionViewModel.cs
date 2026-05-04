@@ -5,9 +5,10 @@ namespace SportsPlacesWeb.Models
 {
     public class NotificacionViewModel
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }   // <-- Guid
         public string Mensaje { get; set; } = null!;
         public DateTime Fecha { get; set; }
         public string UsuarioNombre { get; set; } = null!;
     }
+
 }

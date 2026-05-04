@@ -1,18 +1,15 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace SportsPlacesWeb.Models
+public class CrearNotificacionModel
 {
-    public class CrearNotificacionModel
-    {
-        [Required]
-        public string Mensaje { get; set; } = null!;
+    [Required]
+    public string Mensaje { get; set; } = null!;
 
-        [Required]
-        public DateTime Fecha { get; set; }
+    [Required]
+    public DateTime Fecha { get; set; }
 
-        [Required]
-        public int UsuarioId { get; set; }
-    }
+    [Required]
+    public Guid UsuarioId { get; set; }   // <-- cambiar a Guid
 }
+
 

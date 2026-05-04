@@ -4,13 +4,12 @@ namespace SportsPlacesWeb.Models
 {
     public class ReporteDanoViewModel
     {
-        public int Id { get; set; }
-        public string Estado { get; set; } = null!;
+        public Guid Id { get; set; }
         public string Descripcion { get; set; } = null!;
-        public string Evidencia { get; set; } = null!;  // <-- igual aquí
-
+        public DateTime Fecha { get; set; }
         public string UsuarioNombre { get; set; } = null!;
-        public string EspacioNombre { get; set; } = null!;
+        public string EscenarioNombre { get; set; } = null!;
         public string SedeNombre { get; set; } = null!;
     }
+
 }

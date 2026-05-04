@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace SportsPlacesWeb.Data.Entity;
 
-public partial class Usuario
+public partial class Usuario : AuditBase
 {
-    public int Id { get; set; }
+    public Guid Id { get; set; }
 
     public string Nombre { get; set; } = null!;
 
@@ -13,9 +13,10 @@ public partial class Usuario
 
     public string CorreoInstitucional { get; set; } = null!;
 
-    public virtual ICollection<Notificacione> Notificaciones { get; set; } = new List<Notificacione>();
+    public virtual ICollection<Notificacion> Notificaciones { get; set; } = new List<Notificacion>();
 
-    public virtual ICollection<ReportesDano> ReportesDanos { get; set; } = new List<ReportesDano>();
 
-    public virtual ICollection<Reserva> Reservas { get; set; } = new List<Reserva>();
+    public virtual ICollection<ReporteDano> ReportesDano { get; set; } = new List<ReporteDano>();
+
+    public virtual ICollection<Reservas> Reservas { get; set; } = new List<Reservas>();
 }

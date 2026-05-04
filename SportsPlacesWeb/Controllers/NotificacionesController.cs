@@ -36,13 +36,13 @@ namespace SportsPlacesWeb.Controllers
             return Ok(notificaciones);
         }
 
-        // GET: api/notificaciones/5
+        // GET: api/notificaciones/{id}
         [HttpGet("{id}")]
-        public IActionResult GetNotificacion(int id)
+        public IActionResult GetNotificacion(Guid id)   // <-- Guid
         {
             var notificacion = _context.Notificaciones
                 .Include(n => n.Usuario)
-                .Where(n => n.Id == id)
+                .Where(n => n.Id == id)   // ahora coincide Guid == Guid
                 .Select(n => new NotificacionViewModel
                 {
                     Id = n.Id,
@@ -65,12 +65,13 @@ namespace SportsPlacesWeb.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var notificacion = new Notificacion
+            var notificacion = new Notificaciones
             {
                 Mensaje = model.Mensaje,
                 Fecha = DateOnly.FromDateTime(model.Fecha),
                 UsuarioId = model.UsuarioId
             };
+
 
             _context.Notificaciones.Add(notificacion);
             _context.SaveChanges();
@@ -90,9 +91,9 @@ namespace SportsPlacesWeb.Controllers
             return CreatedAtAction(nameof(GetNotificacion), new { id = notificacion.Id }, notificacionViewModel);
         }
 
-        // PUT: api/notificaciones/5
+        // PUT: api/notificaciones/{id}
         [HttpPut("{id}")]
-        public IActionResult EditarNotificacion(int id, [FromBody] CrearNotificacionModel model)
+        public IActionResult EditarNotificacion(Guid id, [FromBody] CrearNotificacionModel model)
         {
             var notificacion = _context.Notificaciones.Find(id);
             if (notificacion == null)
@@ -104,7 +105,19 @@ namespace SportsPlacesWeb.Controllers
 
             _context.SaveChanges();
 
-            return Ok(model);
+            var notificacionViewModel = _context.Notificaciones
+                .Include(n => n.Usuario)
+                .Where(n => n.Id == notificacion.Id)
+                .Select(n => new NotificacionViewModel
+                {
+                    Id = n.Id,
+                    Mensaje = n.Mensaje,
+                    Fecha = n.Fecha.ToDateTime(TimeOnly.MinValue),
+                    UsuarioNombre = n.Usuario.Nombre
+                })
+                .FirstOrDefault();
+
+            return Ok(notificacionViewModel);
         }
 
         // DELETE: api/notificaciones/5
@@ -122,4 +135,5 @@ namespace SportsPlacesWeb.Controllers
         }
     }
 }
+
 
