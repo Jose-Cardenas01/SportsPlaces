@@ -19,7 +19,7 @@ public partial class Reservas : AuditBase
 
     public int SedesId { get; set; }
 
-    public virtual Escenarios Espacio { get; set; } = null!;
+    public virtual Escenario Espacio { get; set; } = null!;
 
     public virtual Usuario Usuario { get; set; } = null!;
 }

@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using SportsPlacesWeb.Data;
 using SportsPlacesWeb.Data.Entity;
 using SportsPlacesWeb.Models;
-using System.Linq;
 
 namespace SportsPlacesWeb.Controllers
 {
@@ -34,9 +33,9 @@ namespace SportsPlacesWeb.Controllers
             return Ok(sedes);
         }
 
-        // GET: api/sedes/5
-        [HttpGet("{id}")]
-        public IActionResult GetSede(int id)
+        // GET: api/sedes/{id}
+        [HttpGet("{id:guid}")]
+        public IActionResult GetSede(Guid id)
         {
             var sede = _context.Sedes
                 .Where(s => s.Id == id)
@@ -70,12 +69,13 @@ namespace SportsPlacesWeb.Controllers
             _context.Sedes.Add(sede);
             _context.SaveChanges();
 
+            model.Id = sede.Id;
             return CreatedAtAction(nameof(GetSede), new { id = sede.Id }, model);
         }
 
-        // PUT: api/sedes/5
-        [HttpPut("{id}")]
-        public IActionResult EditarSede(int id, [FromBody] SedeViewModel model)
+        // PUT: api/sedes/{id}
+        [HttpPut("{id:guid}")]
+        public IActionResult EditarSede(Guid id, [FromBody] SedeViewModel model)
         {
             var sede = _context.Sedes.Find(id);
             if (sede == null)
@@ -86,12 +86,13 @@ namespace SportsPlacesWeb.Controllers
 
             _context.SaveChanges();
 
+            model.Id = id;
             return Ok(model);
         }
 
-        // DELETE: api/sedes/5
-        [HttpDelete("{id}")]
-        public IActionResult EliminarSede(int id)
+        // DELETE: api/sedes/{id}
+        [HttpDelete("{id:guid}")]
+        public IActionResult EliminarSede(Guid id)
         {
             var sede = _context.Sedes.Find(id);
             if (sede == null)

@@ -4,15 +4,10 @@ namespace SportsPlacesWeb.Models
 {
     public class EscenarioViewModel
     {
-        public int Id { get; set; }
-
-        [Required, MaxLength(100)]
-        public string Nombre { get; set; }
-
-        [Required, MaxLength(50)]
-        public string Estado { get; set; } // Disponible, Mantenimiento, Ocupado
-
-        [Required]
-        public string SedeNombre { get; set; }
+        public Guid Id { get; set; }
+        public string Nombre { get; set; } = string.Empty;
+        public string Estado { get; set; } = string.Empty;  // EscenarioStatus como string
+        public Guid SedesId { get; set; }                   // FK para crear/editar
+        public string SedeNombre { get; set; } = string.Empty;
     }
 }

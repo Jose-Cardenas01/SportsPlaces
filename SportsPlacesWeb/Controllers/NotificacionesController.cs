@@ -65,7 +65,7 @@ namespace SportsPlacesWeb.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var notificacion = new Notificaciones
+            var notificacion = new Notificacion
             {
                 Mensaje = model.Mensaje,
                 Fecha = DateOnly.FromDateTime(model.Fecha),

@@ -5,7 +5,7 @@ namespace SportsPlacesWeb.Models
 {
     public class UsuarioViewModel
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
 
         [Required, MaxLength(100)]
         public string Nombre { get; set; }

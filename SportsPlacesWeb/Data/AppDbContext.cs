@@ -16,17 +16,17 @@ public partial class AppDbContext : DbContext
     {
     }
 
-    public virtual DbSet<Escenarios> Escenarios { get; set; }
+    public virtual DbSet<Escenario> Escenarios { get; set; }
 
     public DbSet<Notificacion> Notificaciones { get; set; }
 
 
-    public DbSet<ReporteDano> ReportesDanos { get; set; }
+    public DbSet<ReporteDano> ReportesDano { get; set; }
 
 
     public virtual DbSet<Reservas> Reservas { get; set; }
 
-    public virtual DbSet<Sedes> Sedes { get; set; }
+    public DbSet<Sede> Sedes { get; set; }
 
     public virtual DbSet<Usuario> Usuarios { get; set; }
 
@@ -36,7 +36,7 @@ public partial class AppDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Escenarios>(entity =>
+        modelBuilder.Entity<Escenario>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Escenari__3213E83F8C58B69A");
 
@@ -101,15 +101,15 @@ public partial class AppDbContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_ReporteDano_Usuario");
 
-            entity.HasOne(d => d.Escenario).WithMany(p => p.ReportesDano)
+            entity.HasOne(d => d.Escenario).WithMany(p => p.ReportesDanos)
                 .HasForeignKey(d => d.EscenarioId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_ReporteDano_Escenario");
 
             entity.HasOne(d => d.Sede).WithMany(p => p.ReportesDano)
-                .HasForeignKey(d => d.SedeId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_ReporteDano_Sede");
+            .HasForeignKey(d => d.SedeId)
+            .OnDelete(DeleteBehavior.ClientSetNull)
+            .HasConstraintName("FK_ReporteDano_Sede");
         });
 
         modelBuilder.Entity<Reservas>(entity =>
@@ -141,19 +141,18 @@ public partial class AppDbContext : DbContext
                 .HasConstraintName("FK_Reserva_Usuario");
         });
 
-        modelBuilder.Entity<Sedes>(entity =>
+        modelBuilder.Entity<Sede>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Sedes__3213E83F0D49A02B");
+            entity.HasKey(e => e.Id).HasName("PK__Sede__3213E83F...");
+            entity.ToTable("Sedes");
 
             entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.Direccion)
-                .HasMaxLength(50)
-                .IsUnicode(false)
-                .HasColumnName("direccion");
             entity.Property(e => e.Nombre)
-                .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("nombre");
+            entity.Property(e => e.Direccion)
+                .IsUnicode(false)
+                .HasColumnName("direccion");
         });
 
         modelBuilder.Entity<Usuario>(entity =>

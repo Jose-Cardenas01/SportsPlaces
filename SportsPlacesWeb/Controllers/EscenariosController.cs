@@ -3,138 +3,132 @@ using Microsoft.EntityFrameworkCore;
 using SportsPlacesWeb.Data;
 using SportsPlacesWeb.Data.Entity;
 using SportsPlacesWeb.Models;
-using System.Linq;
 
 namespace SportsPlacesWeb.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class ReportesDanoController : ControllerBase
+    public class EscenariosController : ControllerBase
     {
         private readonly AppDbContext _context;
 
-        public ReportesDanoController(AppDbContext context)
+        public EscenariosController(AppDbContext context)
         {
             _context = context;
         }
 
-        // GET: api/reportesdano
+        // GET: api/escenarios
         [HttpGet]
-        public IActionResult GetReportes()
+        public IActionResult GetEscenarios()
         {
-            var reportes = _context.ReportesDanos
-                .Include(r => r.Usuario)
-                .Include(r => r.Espacio)
-                .Include(r => r.Sede)
-                .Select(r => new ReporteDanoViewModel
+            var escenarios = _context.Escenarios
+                .Include(e => e.Sede)
+                .Select(e => new EscenarioViewModel
                 {
-                    Id = r.Id,
-                    Estado = r.Estado,
-                    Descripcion = r.Descripcion,
-                    Evidencia = r.Evidencia,
-                    UsuarioNombre = r.Usuario.Nombre,
-                    EspacioNombre = r.Espacio.Nombre,
-                    SedeNombre = r.Sede.Nombre
+                    Id = e.Id,
+                    Nombre = e.Nombre,
+                    Estado = e.Estado.ToString(),   // Enum → string
+                    SedesId = e.SedesId,
+                    SedeNombre = e.Sede.Nombre
                 })
                 .ToList();
 
-            return Ok(reportes);
+            return Ok(escenarios);
         }
 
-        // GET: api/reportesdano/5
-        [HttpGet("{id}")]
-        public IActionResult GetReporte(int id)
+        // GET: api/escenarios/{id}
+        [HttpGet("{id:guid}")]
+        public IActionResult GetEscenario(Guid id)
         {
-            var reporte = _context.ReportesDanos
-                .Include(r => r.Usuario)
-                .Include(r => r.Espacio)
-                .Include(r => r.Sede)
-                .Where(r => r.Id == id)
-                .Select(r => new ReporteDanoViewModel
+            var escenario = _context.Escenarios
+                .Include(e => e.Sede)
+                .Where(e => e.Id == id)
+                .Select(e => new EscenarioViewModel
                 {
-                    Id = r.Id,
-                    Estado = r.Estado,
-                    Descripcion = r.Descripcion,
-                    Evidencia = r.Evidencia,
-                    UsuarioNombre = r.Usuario.Nombre,
-                    EspacioNombre = r.Espacio.Nombre,
-                    SedeNombre = r.Sede.Nombre
+                    Id = e.Id,
+                    Nombre = e.Nombre,
+                    Estado = e.Estado.ToString(),
+                    SedesId = e.SedesId,
+                    SedeNombre = e.Sede.Nombre
                 })
                 .FirstOrDefault();
 
-            if (reporte == null)
+            if (escenario == null)
                 return NotFound();
 
-            return Ok(reporte);
+            return Ok(escenario);
         }
 
-        // POST: api/reportesdano
+        // POST: api/escenarios
         [HttpPost]
-        public IActionResult CrearReporte([FromBody] CrearReporteDanoModel model)
+        public IActionResult CrearEscenario([FromBody] EscenarioViewModel model)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var reporte = new ReporteDano
+            var escenario = new Escenario              // CORREGIDO: era Escenarios (plural)
             {
-                Estado = model.Estado,
-                Descripcion = model.Descripcion,
-                Evidencia = model.Evidencia,
-                UsuarioId = model.UsuarioId,
-                EspacioId = model.EspacioId,
-                SedeId = model.SedeId
+                Nombre = model.Nombre,
+                SedesId = model.SedesId                // CORREGIDO: era SedeId
             };
 
-            _context.ReportesDanos.Add(reporte);
+            _context.Escenarios.Add(escenario);
             _context.SaveChanges();
 
-            // Proyección a ViewModel para devolver datos enriquecidos
-            var reporteViewModel = _context.ReportesDanos
-                .Include(r => r.Usuario)
-                .Include(r => r.Espacio)
-                .Include(r => r.Sede)
-                .Where(r => r.Id == reporte.Id)
-                .Select(r => new ReporteDanoViewModel
+            var escenarioViewModel = _context.Escenarios
+                .Include(e => e.Sede)
+                .Where(e => e.Id == escenario.Id)
+                .Select(e => new EscenarioViewModel
                 {
-                    Id = r.Id,
-                    Estado = r.Estado,
-                    Descripcion = r.Descripcion,
-                    Evidencia = r.Evidencia,
-                    UsuarioNombre = r.Usuario.Nombre,
-                    EspacioNombre = r.Espacio.Nombre,
-                    SedeNombre = r.Sede.Nombre
+                    Id = e.Id,
+                    Nombre = e.Nombre,
+                    Estado = e.Estado.ToString(),
+                    SedesId = e.SedesId,
+                    SedeNombre = e.Sede.Nombre
                 })
                 .FirstOrDefault();
 
-            return CreatedAtAction(nameof(GetReporte), new { id = reporte.Id }, reporteViewModel);
+            return CreatedAtAction(nameof(GetEscenario), new { id = escenario.Id }, escenarioViewModel);
         }
 
-        // PUT: api/reportesdano/5
-        [HttpPut("{id}")]
-        public IActionResult EditarReporte(int id, [FromBody] ReporteDanoViewModel model)
+        // PUT: api/escenarios/{id}
+        [HttpPut("{id:guid}")]                         // CORREGIDO: era int
+        public IActionResult EditarEscenario(Guid id, [FromBody] EscenarioViewModel model)
         {
-            var reporte = _context.ReportesDanos.Find(id);
-            if (reporte == null)
+            var escenario = _context.Escenarios.Find(id);
+            if (escenario == null)
                 return NotFound();
 
-            reporte.Estado = model.Estado;
-            reporte.Descripcion = model.Descripcion;
-            reporte.Evidencia = model.Evidencia;
+            escenario.Nombre = model.Nombre;
+            escenario.SedesId = model.SedesId;         // CORREGIDO: era SedeId
 
             _context.SaveChanges();
 
-            return Ok(model);
+            var escenarioViewModel = _context.Escenarios
+                .Include(e => e.Sede)
+                .Where(e => e.Id == escenario.Id)
+                .Select(e => new EscenarioViewModel
+                {
+                    Id = e.Id,
+                    Nombre = e.Nombre,
+                    Estado = e.Estado.ToString(),
+                    SedesId = e.SedesId,
+                    SedeNombre = e.Sede.Nombre
+                })
+                .FirstOrDefault();
+
+            return Ok(escenarioViewModel);
         }
 
-        // DELETE: api/reportesdano/5
-        [HttpDelete("{id}")]
-        public IActionResult EliminarReporte(int id)
+        // DELETE: api/escenarios/{id}
+        [HttpDelete("{id:guid}")]                      // CORREGIDO: era int
+        public IActionResult EliminarEscenario(Guid id)
         {
-            var reporte = _context.ReportesDanos.Find(id);
-            if (reporte == null)
+            var escenario = _context.Escenarios.Find(id);
+            if (escenario == null)
                 return NotFound();
 
-            _context.ReportesDanos.Remove(reporte);
+            _context.Escenarios.Remove(escenario);
             _context.SaveChanges();
 
             return NoContent();

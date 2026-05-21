@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using SportsPlacesWeb.Data;
 using SportsPlacesWeb.Data.Entity;
 using SportsPlacesWeb.Models;
-using System.Linq;
 
 namespace SportsPlacesWeb.Controllers
 {
@@ -18,47 +17,45 @@ namespace SportsPlacesWeb.Controllers
             _context = context;
         }
 
-        // GET: api/Reservas
+        // GET: api/reservas
         [HttpGet]
         public IActionResult GetReservas()
         {
             var reservas = _context.Reservas
-            .Include(r => r.Usuario)
-            .Include(r => r.Espacio)
-            .Include(r => r.Sede)
-            .Select(r => new ReservaViewModel
-            {
-                Id = r.Id,
-                Fecha = r.Fecha.ToDateTime(TimeOnly.MinValue), // convertir DateOnly a DateTime
-                Hora = r.Hora,
-                Estado = r.Estado,
-                UsuarioNombre = r.Usuario.Nombre,
-                EspacioNombre = r.Espacio.Nombre,
-                SedeNombre = r.Sede.Nombre
-            })
-            .ToList(); ;
-
-            return Ok(reservas);
-        }
-
-        // GET: api/reservas/5
-        [HttpGet("{id}")]
-        public IActionResult GetReserva(int id)
-        {
-            var reserva = _context.Reservas
                 .Include(r => r.Usuario)
                 .Include(r => r.Espacio)
-                .Include(r => r.Sede)
-                .Where(r => r.Id == id)
                 .Select(r => new ReservaViewModel
                 {
                     Id = r.Id,
-                    Fecha = r.Fecha.ToDateTime(TimeOnly.MinValue), // convertir DateOnly a DateTime
+                    Fecha = r.Fecha.ToDateTime(TimeOnly.MinValue),
                     Hora = r.Hora,
                     Estado = r.Estado,
                     UsuarioNombre = r.Usuario.Nombre,
                     EspacioNombre = r.Espacio.Nombre,
-                    SedeNombre = r.Sede.Nombre
+                    SedeNombre = string.Empty   // Sede no tiene navegación en la entidad
+                })
+                .ToList();
+
+            return Ok(reservas);
+        }
+
+        // GET: api/reservas/{id}
+        [HttpGet("{id:guid}")]
+        public IActionResult GetReserva(Guid id)
+        {
+            var reserva = _context.Reservas
+                .Include(r => r.Usuario)
+                .Include(r => r.Espacio)
+                .Where(r => r.Id == id)
+                .Select(r => new ReservaViewModel
+                {
+                    Id = r.Id,
+                    Fecha = r.Fecha.ToDateTime(TimeOnly.MinValue),
+                    Hora = r.Hora,
+                    Estado = r.Estado,
+                    UsuarioNombre = r.Usuario.Nombre,
+                    EspacioNombre = r.Espacio.Nombre,
+                    SedeNombre = string.Empty
                 })
                 .FirstOrDefault();
 
@@ -75,9 +72,9 @@ namespace SportsPlacesWeb.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var reserva = new Reserva
+            var reserva = new Reservas
             {
-                Fecha = DateOnly.FromDateTime(model.Fecha), // convertir DateTime a DateOnly
+                Fecha = DateOnly.FromDateTime(model.Fecha),
                 Hora = model.Hora,
                 Estado = "Pendiente",
                 UsuarioId = model.UsuarioId,
@@ -88,11 +85,9 @@ namespace SportsPlacesWeb.Controllers
             _context.Reservas.Add(reserva);
             _context.SaveChanges();
 
-            // Proyección a ViewModel para devolver datos enriquecidos
             var reservaViewModel = _context.Reservas
                 .Include(r => r.Usuario)
                 .Include(r => r.Espacio)
-                .Include(r => r.Sede)
                 .Where(r => r.Id == reserva.Id)
                 .Select(r => new ReservaViewModel
                 {
@@ -102,16 +97,16 @@ namespace SportsPlacesWeb.Controllers
                     Estado = r.Estado,
                     UsuarioNombre = r.Usuario.Nombre,
                     EspacioNombre = r.Espacio.Nombre,
-                    SedeNombre = r.Sede.Nombre
+                    SedeNombre = string.Empty
                 })
                 .FirstOrDefault();
 
             return CreatedAtAction(nameof(GetReserva), new { id = reserva.Id }, reservaViewModel);
         }
 
-        // PUT: api/reservas/5
-        [HttpPut("{id}")]
-        public IActionResult EditarReserva(int id, [FromBody] ReservaViewModel model)
+        // PUT: api/reservas/{id}
+        [HttpPut("{id:guid}")]
+        public IActionResult EditarReserva(Guid id, [FromBody] CrearReservaModel model)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -120,18 +115,17 @@ namespace SportsPlacesWeb.Controllers
             if (reserva == null)
                 return NotFound();
 
-            // Actualizar propiedades
-            reserva.Estado = model.Estado;
+            reserva.Fecha = DateOnly.FromDateTime(model.Fecha);
             reserva.Hora = model.Hora;
-            reserva.Fecha = DateOnly.FromDateTime(model.Fecha); // convertir DateTime a DateOnly
+            reserva.UsuarioId = model.UsuarioId;
+            reserva.EspacioId = model.EspacioId;
+            reserva.SedesId = model.SedeId;
 
             _context.SaveChanges();
 
-            // Proyección a ViewModel para devolver datos actualizados
             var reservaViewModel = _context.Reservas
                 .Include(r => r.Usuario)
                 .Include(r => r.Espacio)
-                .Include(r => r.Sede)
                 .Where(r => r.Id == reserva.Id)
                 .Select(r => new ReservaViewModel
                 {
@@ -141,16 +135,30 @@ namespace SportsPlacesWeb.Controllers
                     Estado = r.Estado,
                     UsuarioNombre = r.Usuario.Nombre,
                     EspacioNombre = r.Espacio.Nombre,
-                    SedeNombre = r.Sede.Nombre
+                    SedeNombre = string.Empty
                 })
                 .FirstOrDefault();
 
             return Ok(reservaViewModel);
         }
 
-        // DELETE: api/reservas/5
-        [HttpDelete("{id}")]
-        public IActionResult EliminarReserva(int id)
+        // PATCH: api/reservas/{id}/estado
+        [HttpPatch("{id:guid}/estado")]
+        public IActionResult CambiarEstado(Guid id, [FromBody] string nuevoEstado)
+        {
+            var reserva = _context.Reservas.Find(id);
+            if (reserva == null)
+                return NotFound();
+
+            reserva.Estado = nuevoEstado;
+            _context.SaveChanges();
+
+            return NoContent();
+        }
+
+        // DELETE: api/reservas/{id}
+        [HttpDelete("{id:guid}")]
+        public IActionResult EliminarReserva(Guid id)
         {
             var reserva = _context.Reservas.Find(id);
             if (reserva == null)
@@ -161,6 +169,5 @@ namespace SportsPlacesWeb.Controllers
 
             return NoContent();
         }
-
     }
 }

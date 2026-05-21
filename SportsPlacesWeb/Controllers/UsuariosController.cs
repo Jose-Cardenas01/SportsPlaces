@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using SportsPlacesWeb.Data;
 using SportsPlacesWeb.Data.Entity;
 using SportsPlacesWeb.Models;
-using System.Linq;
 
 namespace SportsPlacesWeb.Controllers
 {
@@ -36,8 +35,8 @@ namespace SportsPlacesWeb.Controllers
         }
 
         // GET: api/usuarios/5
-        [HttpGet("{id}")]
-        public IActionResult GetUsuario(int id)
+        [HttpGet("{id:guid}")]
+        public IActionResult GetUsuario(Guid id)
         {
             var usuario = _context.Usuarios
                 .Where(u => u.Id == id)
@@ -73,12 +72,13 @@ namespace SportsPlacesWeb.Controllers
             _context.Usuarios.Add(usuario);
             _context.SaveChanges();
 
+            model.Id = usuario.Id;
             return CreatedAtAction(nameof(GetUsuario), new { id = usuario.Id }, model);
         }
 
         // PUT: api/usuarios/5
-        [HttpPut("{id}")]
-        public IActionResult EditarUsuario(int id, [FromBody] UsuarioViewModel model)
+        [HttpPut("{id:guid}")]
+        public IActionResult EditarUsuario(Guid id, [FromBody] UsuarioViewModel model)
         {
             var usuario = _context.Usuarios.Find(id);
             if (usuario == null)
@@ -90,12 +90,13 @@ namespace SportsPlacesWeb.Controllers
 
             _context.SaveChanges();
 
+            model.Id = id;
             return Ok(model);
         }
 
         // DELETE: api/usuarios/5
-        [HttpDelete("{id}")]
-        public IActionResult EliminarUsuario(int id)
+        [HttpDelete("{id:guid}")]
+        public IActionResult EliminarUsuario(Guid id)
         {
             var usuario = _context.Usuarios.Find(id);
             if (usuario == null)
@@ -108,3 +109,4 @@ namespace SportsPlacesWeb.Controllers
         }
     }
 }
+

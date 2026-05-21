@@ -1,15 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace SportsPlacesWeb.Data.Entity;
-
-public partial class Sedes : AuditBase
+namespace SportsPlacesWeb.Data.Entity
 {
-    public Guid Id { get; set; }
+    public partial class Sede
+    {
+        public Guid Id { get; set; }
+        public string Nombre { get; set; } = null!;
+        public string Direccion { get; set; } = null!;
 
-    public string Nombre { get; set; } = null!;
+        // Relación con Escenarios
+        public virtual ICollection<Escenario> Escenarios { get; set; } = new List<Escenario>();
 
-    public string Direccion { get; set; } = null!;
-
-    public virtual ICollection<Escenarios> Escenarios { get; set; } = new List<Escenarios>();
+        // Relación con ReportesDano
+        public virtual ICollection<ReporteDano> ReportesDano { get; set; } = new List<ReporteDano>();
+    }
 }

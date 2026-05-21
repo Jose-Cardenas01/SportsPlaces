@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace SportsPlacesWeb.Data.Entity;
 
-public partial class Escenarios : AuditBase
+public partial class Escenario : AuditBase
 {
     public Guid Id { get; set; }
 
@@ -17,10 +17,10 @@ public partial class Escenarios : AuditBase
     public Guid CalendarioId { get; set; }
 
     //Navigator Propierty
-    public virtual ICollection<ReportesDano> ReportesDanos { get; set; } = new List<ReportesDano>();
+    public virtual ICollection<ReporteDano> ReportesDanos { get; set; } = new List<ReporteDano>();
 
     public virtual ICollection<Reservas> Reservas { get; set; } = new List<Reservas>();
 
-    public virtual Sedes Sede { get; set; } = null!;
+    public virtual Sede Sede { get; set; } = null!;
     public virtual Calendarios Calendario { get; set; } = null!;
 }

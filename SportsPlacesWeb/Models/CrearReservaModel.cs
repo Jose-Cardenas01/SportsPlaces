@@ -5,19 +5,10 @@ namespace SportsPlacesWeb.Models
 {
     public class CrearReservaModel
     {
-        [Required]
         public DateTime Fecha { get; set; }
-
-        [Required, MaxLength(20)]
-        public string Hora { get; set; }
-
-        [Required]
-        public int UsuarioId { get; set; }
-
-        [Required]
-        public int EspacioId { get; set; }
-
-        [Required]
-        public int SedeId { get; set; }
+        public TimeOnly Hora { get; set; }      // CORREGIDO: TimeOnly, no string
+        public int UsuarioId { get; set; }      // CORREGIDO: int, no Guid
+        public int EspacioId { get; set; }      // int
+        public int SedeId { get; set; }         // int
     }
 }

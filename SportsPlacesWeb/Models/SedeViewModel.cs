@@ -4,7 +4,7 @@ namespace SportsPlacesWeb.Models
 {
     public class SedeViewModel
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }        // CORREGIDO: era int
 
         [Required, MaxLength(50)]
         public string Nombre { get; set; }

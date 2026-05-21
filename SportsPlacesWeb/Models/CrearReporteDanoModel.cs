@@ -4,21 +4,13 @@ namespace SportsPlacesWeb.Models
 {
     public class CrearReporteDanoModel
     {
-        [Required]
-        public string Estado { get; set; } = null!;
-
-        [Required]
-        public string Descripcion { get; set; } = null!;
-
-        public string Evidencia { get; set; } = null!;
-
-        [Required]
-        public int UsuarioId { get; set; }
-
-        [Required]
-        public int EspacioId { get; set; }
-
-        [Required]
-        public int SedeId { get; set; }
+        public string? Descripcion { get; set; }
+        public DateTime Fecha { get; set; }
+        public byte[]? Evidencia { get; set; }      // CORREGIDO: byte[], no string
+        public Guid UsuarioId { get; set; }
+        public Guid EscenarioId { get; set; }       // CORREGIDO: era EspacioId
+        public Guid SedeId { get; set; }
     }
+
+
 }

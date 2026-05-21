@@ -2,19 +2,20 @@
 
 public partial class ReporteDano
 {
-    public Guid Id { get; set; }   // Guid si tu PK es único
+    public Guid Id { get; set; }
     public string? Descripcion { get; set; }
     public DateOnly Fecha { get; set; }
     public byte[]? Evidencia { get; set; }
 
-    // FK
+    // Foreign Keys
     public Guid UsuarioId { get; set; }
     public Guid EscenarioId { get; set; }
-    public Guid SedeId { get; set; } = Guid.Empty;
+    public Guid SedeId { get; set; }
 
-    // Navigation
+    // Navigation Properties
     public virtual Usuario Usuario { get; set; } = null!;
     public virtual Escenario Escenario { get; set; } = null!;
     public virtual Sede Sede { get; set; } = null!;
 }
+
 
