@@ -23,7 +23,10 @@
                     </div>
                     <div class="mb-3">
                         <label for="reservaActividad" class="form-label">Actividad</label>
-                        <input type="text" id="reservaActividad" class="form-control" required />
+                        <select id="reservaActividad" class="form-select" required>
+                            <option value="PracticaLibre">PracticaLibre</option>
+                            <option value="PracticaDeportiva">PracticaDeportiva</option>
+                        </select>
                     </div>
                     <div class="mb-0">
                         <label class="form-label">Horario seleccionado</label>
@@ -55,13 +58,33 @@
             const reservaHorario = document.getElementById('reservaHorario');
             let selectedEvent = null;
 
-            const eventosIniciales = [
-                { title: 'Disponible', start: '2026-05-25T08:00:00', end: '2026-05-25T09:00:00', estado: 'Disponible' },
-                { title: 'PracticaDeportiva', start: '2026-05-25T09:00:00', end: '2026-05-25T10:00:00', estado: 'PracticaDeportiva' },
-                { title: 'PracticaLibre', start: '2026-05-26T10:00:00', end: '2026-05-26T11:00:00', estado: 'PracticaLibre' },
-                { title: 'Disponible', start: '2026-05-27T12:00:00', end: '2026-05-27T13:00:00', estado: 'Disponible' },
-                { title: 'Disponible', start: '2026-05-28T16:00:00', end: '2026-05-28T17:00:00', estado: 'Disponible' }
-            ];
+            const HORA_INICIO = 6;
+            const HORA_FIN = 21;
+
+            function construirBloquesDisponibles(startStr, endStr) {
+                const eventos = [];
+                const fechaInicio = new Date(startStr);
+                const fechaFin = new Date(endStr);
+
+                for (let dia = new Date(fechaInicio); dia < fechaFin; dia.setDate(dia.getDate() + 1)) {
+                    for (let hora = HORA_INICIO; hora < HORA_FIN; hora++) {
+                        const inicio = new Date(dia);
+                        inicio.setHours(hora, 0, 0, 0);
+
+                        const fin = new Date(dia);
+                        fin.setHours(hora + 1, 0, 0, 0);
+
+                        eventos.push({
+                            title: 'Disponible',
+                            start: inicio.toISOString(),
+                            end: fin.toISOString(),
+                            estado: 'Disponible'
+                        });
+                    }
+                }
+
+                return eventos;
+            }
 
             const calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'timeGridWeek',
@@ -81,7 +104,9 @@
                 eventClick: function (info) {
                     handleReservaClick(info.event);
                 },
-                events: eventosIniciales
+                events: function (fetchInfo, successCallback) {
+                    successCallback(construirBloquesDisponibles(fetchInfo.startStr, fetchInfo.endStr));
+                }
             });
 
             calendar.render();
@@ -104,10 +129,13 @@
                     return;
                 }
 
-                selectedEvent.setProp('title', 'Ocupado');
-                selectedEvent.setExtendedProp('estado', 'Ocupado');
-                selectedEvent.setProp('backgroundColor', '#6c757d');
-                selectedEvent.setProp('borderColor', '#6c757d');
+                const actividad = document.getElementById('reservaActividad').value;
+                const color = ESTADOS[actividad]?.color ?? '#6c757d';
+
+                selectedEvent.setProp('title', actividad);
+                selectedEvent.setExtendedProp('estado', actividad);
+                selectedEvent.setProp('backgroundColor', color);
+                selectedEvent.setProp('borderColor', color);
                 selectedEvent.setProp('classNames', ['estado-no-disponible']);
 
                 reservaModal.hide();
