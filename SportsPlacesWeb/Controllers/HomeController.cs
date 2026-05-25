@@ -32,18 +32,22 @@ namespace SportsPlacesWeb.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetStatusScene(Guid id, DateTime? start, DateTime? end)
+        public async Task<IActionResult> GetStatusScene(Guid id, DateTimeOffset? start, DateTimeOffset? end)
         {
             if (id == Guid.Empty || !start.HasValue || !end.HasValue)
             {
                 return BadRequest("Se requiere escenario y rango de fechas.");
             }
 
-            DateOnly startDate = DateOnly.FromDateTime(start.Value);
-            DateOnly endDate = DateOnly.FromDateTime(end.Value);
+            var startLocal = start.Value.LocalDateTime;
+            var endLocal = end.Value.LocalDateTime;
 
-            var reservas = await _context.Set<Reservas>().Include(r => r.Espacio)
-                           .Where(r => r.EspacioId == id && r.Fecha >= startDate && r.Fecha <= endDate).ToListAsync();
+            DateOnly startDate = DateOnly.FromDateTime(startLocal);
+            DateOnly endDate = DateOnly.FromDateTime(endLocal);
+
+            var reservas = await _context.Set<Reservas>()
+                           .Where(r => r.EspacioId == id && r.Fecha >= startDate && r.Fecha < endDate)
+                           .ToListAsync();
 
             TimeOnly startTime = new(6, 0);
             TimeOnly endTime = new(22, 0);
@@ -57,7 +61,10 @@ namespace SportsPlacesWeb.Controllers
                     TimeOnly startblock = time;
                     TimeOnly endblock = time.AddMinutes(60);
 
-                    Reservas? reserva = reservas.FirstOrDefault(r => r.Fecha == date && r.HoraInicio >= startblock && r.HoraFin <= endblock);
+                    Reservas? reserva = reservas.FirstOrDefault(r =>
+                        r.Fecha == date &&
+                        r.HoraInicio < endblock &&
+                        r.HoraFin > startblock);
 
                     var startDateTime = date.ToDateTime(startblock).ToString("yyyy-MM-ddTHH:mm:ss");
                     var endDateTime = date.ToDateTime(endblock).ToString("yyyy-MM-ddTHH:mm:ss");

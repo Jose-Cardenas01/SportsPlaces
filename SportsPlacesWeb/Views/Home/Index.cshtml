@@ -74,7 +74,7 @@
                 allDaySlot: false,
                 nowIndicator: true,
                 eventDidMount: function (info) {
-                    const estado = info.event.extendedProps.estado;
+                    const estado = info.event.extendedProps.estado ?? info.event.title;
                     const esDisponible = estado === 'Disponible';
 
                     info.el.classList.add(esDisponible ? 'estado-disponible' : 'estado-no-disponible');
@@ -118,7 +118,7 @@
             });
 
             function handleReservaClick(evento) {
-                const estado = evento.extendedProps.estado;
+                const estado = evento.extendedProps.estado ?? evento.title;
                 if (estado !== 'Disponible') {
                     return;
                 }
