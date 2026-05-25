@@ -6,6 +6,13 @@
 
 <h2 class="mb-3">Calendario - Volley Playa</h2>
 
+<select id="escenarioId" class="form-select mb-3">
+    @foreach (var escenario in ViewBag.Escenarios)
+    {
+        <option value="@escenario.Id">@escenario.Nombre</option>
+    }
+</select>
+
 <div id="calendar" class="calendar-wrapper"></div>
 
 <div class="modal fade" id="reservaModal" tabindex="-1" aria-labelledby="reservaModalLabel" aria-hidden="true">
@@ -56,35 +63,8 @@
             const reservaModal = new bootstrap.Modal(reservaModalEl);
             const reservaForm = document.getElementById('reservaForm');
             const reservaHorario = document.getElementById('reservaHorario');
+            const escenarioIdEl = document.getElementById('escenarioId');
             let selectedEvent = null;
-
-            const HORA_INICIO = 6;
-            const HORA_FIN = 21;
-
-            function construirBloquesDisponibles(startStr, endStr) {
-                const eventos = [];
-                const fechaInicio = new Date(startStr);
-                const fechaFin = new Date(endStr);
-
-                for (let dia = new Date(fechaInicio); dia < fechaFin; dia.setDate(dia.getDate() + 1)) {
-                    for (let hora = HORA_INICIO; hora < HORA_FIN; hora++) {
-                        const inicio = new Date(dia);
-                        inicio.setHours(hora, 0, 0, 0);
-
-                        const fin = new Date(dia);
-                        fin.setHours(hora + 1, 0, 0, 0);
-
-                        eventos.push({
-                            title: 'Disponible',
-                            start: inicio.toISOString(),
-                            end: fin.toISOString(),
-                            estado: 'Disponible'
-                        });
-                    }
-                }
-
-                return eventos;
-            }
 
             const calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'timeGridWeek',
@@ -104,12 +84,38 @@
                 eventClick: function (info) {
                     handleReservaClick(info.event);
                 },
-                events: function (fetchInfo, successCallback) {
-                    successCallback(construirBloquesDisponibles(fetchInfo.startStr, fetchInfo.endStr));
+                events: async function (fetchInfo, successCallback, failureCallback) {
+                    const escenarioId = escenarioIdEl.value;
+                    if (!escenarioId) {
+                        successCallback([]);
+                        return;
+                    }
+
+                    const params = new URLSearchParams({
+                        id: escenarioId,
+                        start: fetchInfo.startStr,
+                        end: fetchInfo.endStr
+                    });
+
+                    try {
+                        const response = await fetch(`/Home/GetStatusScene?${params.toString()}`);
+                        if (!response.ok) {
+                            throw new Error('No se pudieron cargar los estados del escenario.');
+                        }
+
+                        const eventos = await response.json();
+                        successCallback(eventos);
+                    } catch (error) {
+                        console.error(error);
+                        failureCallback(error);
+                    }
                 }
             });
 
             calendar.render();
+            escenarioIdEl.addEventListener('change', function () {
+                calendar.refetchEvents();
+            });
 
             function handleReservaClick(evento) {
                 const estado = evento.extendedProps.estado;
