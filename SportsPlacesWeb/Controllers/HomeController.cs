@@ -32,13 +32,22 @@ namespace SportsPlacesWeb.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetStatusScene(Guid id, DateTime? start, DateTime? end)
+        public async Task<IActionResult> GetStatusScene(Guid id, DateTimeOffset? start, DateTimeOffset? end)
         {
-            DateOnly startDate = DateOnly.FromDateTime(start.Value);
-            DateOnly endDate = DateOnly.FromDateTime(end.Value);
+            if (id == Guid.Empty || !start.HasValue || !end.HasValue)
+            {
+                return BadRequest("Se requiere escenario y rango de fechas.");
+            }
 
-            var reservas = await _context.Set<Reservas>().Include(r => r.Espacio)
-                           .Where(r => r.EspacioId == id && r.Fecha >= startDate && r.Fecha <= endDate).ToListAsync();
+            var startLocal = start.Value.LocalDateTime;
+            var endLocal = end.Value.LocalDateTime;
+
+            DateOnly startDate = DateOnly.FromDateTime(startLocal);
+            DateOnly endDate = DateOnly.FromDateTime(endLocal);
+
+            var reservas = await _context.Set<Reservas>()
+                           .Where(r => r.EspacioId == id && r.Fecha >= startDate && r.Fecha < endDate)
+                           .ToListAsync();
 
             TimeOnly startTime = new(6, 0);
             TimeOnly endTime = new(22, 0);
@@ -52,7 +61,10 @@ namespace SportsPlacesWeb.Controllers
                     TimeOnly startblock = time;
                     TimeOnly endblock = time.AddMinutes(60);
 
-                    Reservas? reserva = reservas.FirstOrDefault(r => r.Fecha == date && r.HoraInicio >= startblock && r.HoraFin <= endblock);
+                    Reservas? reserva = reservas.FirstOrDefault(r =>
+                        r.Fecha == date &&
+                        r.HoraInicio < endblock &&
+                        r.HoraFin > startblock);
 
                     var startDateTime = date.ToDateTime(startblock).ToString("yyyy-MM-ddTHH:mm:ss");
                     var endDateTime = date.ToDateTime(endblock).ToString("yyyy-MM-ddTHH:mm:ss");
@@ -63,6 +75,7 @@ namespace SportsPlacesWeb.Controllers
                         {
                             id = 0,
                             title = EscenarioStatus.Disponible.ToString(),
+                            estado = EscenarioStatus.Disponible.ToString(),
                             start = startDateTime,
                             end = endDateTime,
                             color = StatusColor.GetColorByStatus(1),
@@ -75,6 +88,7 @@ namespace SportsPlacesWeb.Controllers
                         {
                             id = reserva.Id,
                             title = reserva.Status.ToString(),
+                            estado = reserva.Status.ToString(),
                             start = startDateTime,
                             end = endDateTime,
                             color = StatusColor.GetColorByStatus((int)reserva.Status),
