@@ -6,6 +6,13 @@
 
 <h2 class="mb-3">Calendario - Volley Playa</h2>
 
+<select id="escenarioId" class="form-select mb-3">
+    @foreach (var escenario in ViewBag.Escenarios)
+    {
+        <option value="@escenario.Id">@escenario.Nombre</option>
+    }
+</select>
+
 <div id="calendar" class="calendar-wrapper"></div>
 
 <div class="modal fade" id="reservaModal" tabindex="-1" aria-labelledby="reservaModalLabel" aria-hidden="true">
@@ -23,7 +30,10 @@
                     </div>
                     <div class="mb-3">
                         <label for="reservaActividad" class="form-label">Actividad</label>
-                        <input type="text" id="reservaActividad" class="form-control" required />
+                        <select id="reservaActividad" class="form-select" required>
+                            <option value="PracticaLibre">PracticaLibre</option>
+                            <option value="PracticaDeportiva">PracticaDeportiva</option>
+                        </select>
                     </div>
                     <div class="mb-0">
                         <label class="form-label">Horario seleccionado</label>
@@ -53,15 +63,8 @@
             const reservaModal = new bootstrap.Modal(reservaModalEl);
             const reservaForm = document.getElementById('reservaForm');
             const reservaHorario = document.getElementById('reservaHorario');
+            const escenarioIdEl = document.getElementById('escenarioId');
             let selectedEvent = null;
-
-            const eventosIniciales = [
-                { title: 'Disponible', start: '2026-05-25T08:00:00', end: '2026-05-25T09:00:00', estado: 'Disponible' },
-                { title: 'PracticaDeportiva', start: '2026-05-25T09:00:00', end: '2026-05-25T10:00:00', estado: 'PracticaDeportiva' },
-                { title: 'PracticaLibre', start: '2026-05-26T10:00:00', end: '2026-05-26T11:00:00', estado: 'PracticaLibre' },
-                { title: 'Disponible', start: '2026-05-27T12:00:00', end: '2026-05-27T13:00:00', estado: 'Disponible' },
-                { title: 'Disponible', start: '2026-05-28T16:00:00', end: '2026-05-28T17:00:00', estado: 'Disponible' }
-            ];
 
             const calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'timeGridWeek',
@@ -81,10 +84,38 @@
                 eventClick: function (info) {
                     handleReservaClick(info.event);
                 },
-                events: eventosIniciales
+                events: async function (fetchInfo, successCallback, failureCallback) {
+                    const escenarioId = escenarioIdEl.value;
+                    if (!escenarioId) {
+                        successCallback([]);
+                        return;
+                    }
+
+                    const params = new URLSearchParams({
+                        id: escenarioId,
+                        start: fetchInfo.startStr,
+                        end: fetchInfo.endStr
+                    });
+
+                    try {
+                        const response = await fetch(`/Home/GetStatusScene?${params.toString()}`);
+                        if (!response.ok) {
+                            throw new Error('No se pudieron cargar los estados del escenario.');
+                        }
+
+                        const eventos = await response.json();
+                        successCallback(eventos);
+                    } catch (error) {
+                        console.error(error);
+                        failureCallback(error);
+                    }
+                }
             });
 
             calendar.render();
+            escenarioIdEl.addEventListener('change', function () {
+                calendar.refetchEvents();
+            });
 
             function handleReservaClick(evento) {
                 const estado = evento.extendedProps.estado;
@@ -104,10 +135,13 @@
                     return;
                 }
 
-                selectedEvent.setProp('title', 'Ocupado');
-                selectedEvent.setExtendedProp('estado', 'Ocupado');
-                selectedEvent.setProp('backgroundColor', '#6c757d');
-                selectedEvent.setProp('borderColor', '#6c757d');
+                const actividad = document.getElementById('reservaActividad').value;
+                const color = ESTADOS[actividad]?.color ?? '#6c757d';
+
+                selectedEvent.setProp('title', actividad);
+                selectedEvent.setExtendedProp('estado', actividad);
+                selectedEvent.setProp('backgroundColor', color);
+                selectedEvent.setProp('borderColor', color);
                 selectedEvent.setProp('classNames', ['estado-no-disponible']);
 
                 reservaModal.hide();

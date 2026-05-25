@@ -34,6 +34,11 @@ namespace SportsPlacesWeb.Controllers
         [HttpGet]
         public async Task<IActionResult> GetStatusScene(Guid id, DateTime? start, DateTime? end)
         {
+            if (id == Guid.Empty || !start.HasValue || !end.HasValue)
+            {
+                return BadRequest("Se requiere escenario y rango de fechas.");
+            }
+
             DateOnly startDate = DateOnly.FromDateTime(start.Value);
             DateOnly endDate = DateOnly.FromDateTime(end.Value);
 
@@ -63,6 +68,7 @@ namespace SportsPlacesWeb.Controllers
                         {
                             id = 0,
                             title = EscenarioStatus.Disponible.ToString(),
+                            estado = EscenarioStatus.Disponible.ToString(),
                             start = startDateTime,
                             end = endDateTime,
                             color = StatusColor.GetColorByStatus(1),
@@ -75,6 +81,7 @@ namespace SportsPlacesWeb.Controllers
                         {
                             id = reserva.Id,
                             title = reserva.Status.ToString(),
+                            estado = reserva.Status.ToString(),
                             start = startDateTime,
                             end = endDateTime,
                             color = StatusColor.GetColorByStatus((int)reserva.Status),
