@@ -28,7 +28,7 @@ namespace SportsPlacesWeb.Controllers
                 {
                     Id = n.Id,
                     Mensaje = n.Mensaje,
-                    Fecha = n.Fecha.ToDateTime(TimeOnly.MinValue),
+                    Fecha = n.FechaEnvio.ToDateTime(TimeOnly.MinValue),
                     UsuarioNombre = n.Usuario.Nombre
                 })
                 .ToList();
@@ -47,7 +47,7 @@ namespace SportsPlacesWeb.Controllers
                 {
                     Id = n.Id,
                     Mensaje = n.Mensaje,
-                    Fecha = n.Fecha.ToDateTime(TimeOnly.MinValue),
+                    Fecha = n.FechaEnvio.ToDateTime(TimeOnly.MinValue),
                     UsuarioNombre = n.Usuario.Nombre
                 })
                 .FirstOrDefault();
@@ -85,7 +85,7 @@ namespace SportsPlacesWeb.Controllers
                 {
                     Id = n.Id,
                     Mensaje = n.Mensaje,
-                    Fecha = n.Fecha.ToDateTime(TimeOnly.MinValue),
+                    Fecha = n.FechaEnvio.ToDateTime(TimeOnly.MinValue),
                     UsuarioNombre = n.Usuario.Nombre
                 })
                 .FirstOrDefault();
@@ -102,7 +102,7 @@ namespace SportsPlacesWeb.Controllers
                 return NotFound();
 
             notificacion.Mensaje = model.Mensaje;
-            notificacion.Fecha = DateOnly.FromDateTime(model.Fecha);
+            notificacion.FechaEnvio = DateOnly.FromDateTime(model.Fecha);
             notificacion.UsuarioId = model.UsuarioId;
 
             _context.SaveChanges();
@@ -114,7 +114,7 @@ namespace SportsPlacesWeb.Controllers
                 {
                     Id = n.Id,
                     Mensaje = n.Mensaje,
-                    Fecha = n.Fecha.ToDateTime(TimeOnly.MinValue),
+                    Fecha = n.FechaEnvio.ToDateTime(TimeOnly.MinValue),
                     UsuarioNombre = n.Usuario.Nombre
                 })
                 .FirstOrDefault();

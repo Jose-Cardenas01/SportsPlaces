@@ -9,7 +9,7 @@ public partial class Notificaciones : AuditBase
     [Required]
     [MaxLength(500, ErrorMessage = "El {0} no puede exceder los {1} caracteres")]
     public required string Mensaje { get; set; } = null!;
-    public DateOnly? FechaEnvio { get; set; }
+    public DateOnly FechaEnvio { get; set; } = DateOnly.FromDateTime(DateTime.Now);
     public string? TipoNotificacion { get; set; }
     // FK
     [Required]

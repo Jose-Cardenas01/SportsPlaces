@@ -8,7 +8,7 @@ namespace SportsPlacesWeb.AutoMapper
     {
         public MappingProfile()
         {
-            CreateMap<Escenarios, EscenarioDTO>().ReverseMap();
+            CreateMap<Escenario, EscenarioDTO>().ReverseMap();
         }
     }
 }

@@ -7,7 +7,7 @@ namespace SportsPlacesWeb.Models
     {
         public Guid Id { get; set; }   // <-- Guid
         public string Mensaje { get; set; } = null!;
-        public DateTime Fecha { get; set; }
+        public DateTime Fecha { get; set; } = DateTime.Now;
         public string UsuarioNombre { get; set; } = null!;
     }
 

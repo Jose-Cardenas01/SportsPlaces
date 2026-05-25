@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using SportsPlacesWeb.Data;
 using SportsPlacesWeb.Data.Entity;
+using SportsPlacesWeb.Enums;
 using SportsPlacesWeb.Models;
 
 namespace SportsPlacesWeb.Controllers
@@ -28,8 +29,9 @@ namespace SportsPlacesWeb.Controllers
                 {
                     Id = r.Id,
                     Fecha = r.Fecha.ToDateTime(TimeOnly.MinValue),
-                    Hora = r.Hora,
-                    Estado = r.Estado,
+                    HoraInicio = r.HoraInicio,
+                    HoraFin = r.HoraFin,
+                    Estado = r.Status,
                     UsuarioNombre = r.Usuario.Nombre,
                     EspacioNombre = r.Espacio.Nombre,
                     SedeNombre = string.Empty   // Sede no tiene navegación en la entidad
@@ -51,8 +53,9 @@ namespace SportsPlacesWeb.Controllers
                 {
                     Id = r.Id,
                     Fecha = r.Fecha.ToDateTime(TimeOnly.MinValue),
-                    Hora = r.Hora,
-                    Estado = r.Estado,
+                    HoraInicio = r.HoraInicio,
+                    HoraFin = r.HoraFin,
+                    Estado = r.Status,
                     UsuarioNombre = r.Usuario.Nombre,
                     EspacioNombre = r.Espacio.Nombre,
                     SedeNombre = string.Empty
@@ -75,11 +78,11 @@ namespace SportsPlacesWeb.Controllers
             var reserva = new Reservas
             {
                 Fecha = DateOnly.FromDateTime(model.Fecha),
-                Hora = model.Hora,
-                Estado = "Pendiente",
+                HoraInicio = model.HoraInicio,
+                HoraFin = model.HoraFin,
+                Status = model.Status,
                 UsuarioId = model.UsuarioId,
                 EspacioId = model.EspacioId,
-                SedesId = model.SedeId
             };
 
             _context.Reservas.Add(reserva);
@@ -93,8 +96,9 @@ namespace SportsPlacesWeb.Controllers
                 {
                     Id = r.Id,
                     Fecha = r.Fecha.ToDateTime(TimeOnly.MinValue),
-                    Hora = r.Hora,
-                    Estado = r.Estado,
+                    HoraInicio = r.HoraInicio,
+                    HoraFin = r.HoraFin,
+                    Estado = r.Status,
                     UsuarioNombre = r.Usuario.Nombre,
                     EspacioNombre = r.Espacio.Nombre,
                     SedeNombre = string.Empty
@@ -116,10 +120,11 @@ namespace SportsPlacesWeb.Controllers
                 return NotFound();
 
             reserva.Fecha = DateOnly.FromDateTime(model.Fecha);
-            reserva.Hora = model.Hora;
+            reserva.HoraInicio = model.HoraInicio;
+            reserva.HoraFin = model.HoraFin;
+            reserva.Status = model.Status;
             reserva.UsuarioId = model.UsuarioId;
             reserva.EspacioId = model.EspacioId;
-            reserva.SedesId = model.SedeId;
 
             _context.SaveChanges();
 
@@ -131,8 +136,9 @@ namespace SportsPlacesWeb.Controllers
                 {
                     Id = r.Id,
                     Fecha = r.Fecha.ToDateTime(TimeOnly.MinValue),
-                    Hora = r.Hora,
-                    Estado = r.Estado,
+                    HoraInicio = r.HoraInicio,
+                    HoraFin = r.HoraFin,
+                    Estado = r.Status,
                     UsuarioNombre = r.Usuario.Nombre,
                     EspacioNombre = r.Espacio.Nombre,
                     SedeNombre = string.Empty
@@ -144,13 +150,13 @@ namespace SportsPlacesWeb.Controllers
 
         // PATCH: api/reservas/{id}/estado
         [HttpPatch("{id:guid}/estado")]
-        public IActionResult CambiarEstado(Guid id, [FromBody] string nuevoEstado)
+        public IActionResult CambiarEstado(Guid id, [FromBody] ReservasStatus nuevoEstado)
         {
             var reserva = _context.Reservas.Find(id);
             if (reserva == null)
                 return NotFound();
 
-            reserva.Estado = nuevoEstado;
+            reserva.Status = nuevoEstado;
             _context.SaveChanges();
 
             return NoContent();

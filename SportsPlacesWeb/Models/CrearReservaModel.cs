@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SportsPlacesWeb.Enums;
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace SportsPlacesWeb.Models
@@ -6,9 +7,11 @@ namespace SportsPlacesWeb.Models
     public class CrearReservaModel
     {
         public DateTime Fecha { get; set; }
-        public TimeOnly Hora { get; set; }      // CORREGIDO: TimeOnly, no string
-        public int UsuarioId { get; set; }      // CORREGIDO: int, no Guid
-        public int EspacioId { get; set; }      // int
-        public int SedeId { get; set; }         // int
+        public TimeOnly HoraInicio { get; set; }      // CORREGIDO: TimeOnly, no string
+        public TimeOnly HoraFin { get; set; }         // CORREGIDO: TimeOnly, no string
+        public ReservasStatus Status { get; set; } = ReservasStatus.PracticaLibre;
+
+        public Guid UsuarioId { get; set; }      // CORREGIDO: int, no Guid
+        public Guid EspacioId { get; set; }      // int
     }
 }
