@@ -1,20 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace SportsPlacesWeb.Data.Entity;
-
-public partial class Usuario : AuditBase
+namespace SportsPlacesWeb.Data.Entity
 {
-    public string Nombre { get; set; } = null!;
+    public class Usuario : AuditBase
+    {
+        public string Nombre { get; set; } = null!;
 
-    public string TipoUsuario { get; set; } = null!;
+        public string TipoUsuario { get; set; } = null!;
 
-    public string CorreoInstitucional { get; set; } = null!;
+        public string CorreoInstitucional { get; set; } = null!;
 
-    //Navigator Propierty
-    public virtual ICollection<Notificaciones> Notificaciones { get; set; } = new List<Notificaciones>();
+        // Use the singular Notificacion entity type so the collection element type
+        // matches the Notificacion entity used in the DbContext and Notificacion class.
+        public virtual ICollection<Notificaciones> Notificaciones { get; set; } = new List<Notificaciones>();
 
-    public virtual ICollection<ReportesDano> ReportesDanos { get; set; } = new List<ReportesDano>();
+        public virtual ICollection<ReportesDano> ReportesDano { get; set; } = new List<ReportesDano>();
 
-    public virtual ICollection<Reservas> Reservas { get; set; } = new List<Reservas>();
+        public virtual ICollection<Reservas> Reservas { get; set; } = new List<Reservas>();
+    }
 }

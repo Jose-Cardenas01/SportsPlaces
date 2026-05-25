@@ -16,9 +16,8 @@ public partial class Reservas : AuditBase
     //FOREIGN KEY
     public Guid EspacioId { get; set; }
     public Guid UsuarioId { get; set; }
-
-    //Navigation properties
-    public virtual Escenarios Espacio { get; set; } = null!;
+    // Navigation properties
+    public virtual Escenario Espacio { get; set; } = null!;
 
     public virtual Usuario Usuario { get; set; } = null!;
 }

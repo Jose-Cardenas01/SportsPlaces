@@ -1,90 +1,118 @@
-﻿@{
-     ViewData["Title"] = "Home Page";
+@{
+    ViewData["Title"] = "Home Page";
 }
  
 <h2>Calendario de estados del escenario</h2>
 
-<div class="row mb-3">
-    <div class="col-md-4">
-        <label for="sceneId" class="form-label">Escenario</label>
-        <select id="sceneId" class="form-select">
-            <option value="">Seleccione un escenario</option>
-            @foreach (var escenario in ViewBag.Escenarios)
-            {
-                <option value="@escenario.Id">@escenario.Nombre</option>
-            }
-        </select>
-    </div>
-    <div class="col-md-3">
-        <label for="startDate" class="form-label">Fecha inicio</label>
-        <input id="startDate" type="date" class="form-control" />
-    </div>
-    <div class="col-md-3">
-        <label for="endDate" class="form-label">Fecha fin</label>
-        <input id="endDate" type="date" class="form-control" />
-    </div>
-    <div class="col-md-2 d-flex align-items-end">
-        <button id="btnLoad" class="btn btn-primary w-100">Cargar</button>
+<h2 class="mb-3">Calendario - Volley Playa</h2>
+
+<div id="calendar" class="calendar-wrapper"></div>
+
+<div class="modal fade" id="reservaModal" tabindex="-1" aria-labelledby="reservaModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="reservaForm">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="reservaModalLabel">Nueva reserva</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="reservaUsuario" class="form-label">Nombre</label>
+                        <input type="text" id="reservaUsuario" class="form-control" required />
+                    </div>
+                    <div class="mb-3">
+                        <label for="reservaActividad" class="form-label">Actividad</label>
+                        <input type="text" id="reservaActividad" class="form-control" required />
+                    </div>
+                    <div class="mb-0">
+                        <label class="form-label">Horario seleccionado</label>
+                        <div id="reservaHorario" class="small text-muted"></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Confirmar reserva</button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 
-<div id="calendar" style="height: 700px;"></div>
- 
- @section Scripts {
-     <script>
-         document.addEventListener('DOMContentLoaded', function () {
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const ESTADOS = {
+                Disponible: { color: '#28a745' },
+                PracticaDeportiva: { color: '#0d6efd' },
+                PracticaLibre: { color: '#dc3545' }
+            };
+
             const calendarEl = document.getElementById('calendar');
-            const sceneIdInput = document.getElementById('sceneId');
-            const startDateInput = document.getElementById('startDate');
-            const endDateInput = document.getElementById('endDate');
-            const btnLoad = document.getElementById('btnLoad');
- 
-            const today = new Date();
-            const plusSeven = new Date();
-            plusSeven.setDate(today.getDate() + 7);
-            startDateInput.value = today.toISOString().split('T')[0];
-            endDateInput.value = plusSeven.toISOString().split('T')[0];
+            const reservaModalEl = document.getElementById('reservaModal');
+            const reservaModal = new bootstrap.Modal(reservaModalEl);
+            const reservaForm = document.getElementById('reservaForm');
+            const reservaHorario = document.getElementById('reservaHorario');
+            let selectedEvent = null;
+
+            const eventosIniciales = [
+                { title: 'Disponible', start: '2026-05-25T08:00:00', end: '2026-05-25T09:00:00', estado: 'Disponible' },
+                { title: 'PracticaDeportiva', start: '2026-05-25T09:00:00', end: '2026-05-25T10:00:00', estado: 'PracticaDeportiva' },
+                { title: 'PracticaLibre', start: '2026-05-26T10:00:00', end: '2026-05-26T11:00:00', estado: 'PracticaLibre' },
+                { title: 'Disponible', start: '2026-05-27T12:00:00', end: '2026-05-27T13:00:00', estado: 'Disponible' },
+                { title: 'Disponible', start: '2026-05-28T16:00:00', end: '2026-05-28T17:00:00', estado: 'Disponible' }
+            ];
 
             const calendar = new FullCalendar.Calendar(calendarEl, {
-                 initialView: 'timeGridWeek',
-                 allDaySlot: false,
-                 slotMinTime: '06:00:00',
-                 slotMaxTime: '22:00:00',
-                 events: []
-             });
- 
-             calendar.render();
+                initialView: 'timeGridWeek',
+                locale: 'es',
+                slotMinTime: '06:00:00',
+                slotMaxTime: '21:00:00',
+                allDaySlot: false,
+                nowIndicator: true,
+                eventDidMount: function (info) {
+                    const estado = info.event.extendedProps.estado;
+                    const esDisponible = estado === 'Disponible';
 
-            function loadStatusScene() {
-                const id = sceneIdInput.value;
-                const start = startDateInput.value;
-                const end = endDateInput.value;
+                    info.el.classList.add(esDisponible ? 'estado-disponible' : 'estado-no-disponible');
+                    info.el.style.backgroundColor = ESTADOS[estado]?.color ?? '#6c757d';
+                    info.el.style.borderColor = ESTADOS[estado]?.color ?? '#6c757d';
+                },
+                eventClick: function (info) {
+                    handleReservaClick(info.event);
+                },
+                events: eventosIniciales
+            });
 
-                if (!id || !start || !end) {
-                    alert('Debe seleccionar escenario y rango de fechas.');
+            calendar.render();
+
+            function handleReservaClick(evento) {
+                const estado = evento.extendedProps.estado;
+                if (estado !== 'Disponible') {
                     return;
                 }
 
-                calendar.removeAllEvents();
-
-                fetch(`/Home/GetStatusScene?id=${encodeURIComponent(id)}&start=${encodeURIComponent(start)}&end=${encodeURIComponent(end)}`)
-                    .then(r => {
-                        if (!r.ok) {
-                            throw new Error('No fue posible consultar el estado del escenario.');
-                        }
-                        return r.json();
-                    })
-                    .then(events => {
-                        calendar.addEventSource(events);
-                    })
-                    .catch(err => {
-                        console.error(err);
-                        alert('No se pudieron cargar los estados del escenario.');
-                    });
+                selectedEvent = evento;
+                reservaHorario.textContent = `${evento.start.toLocaleString('es-ES')} - ${evento.end.toLocaleString('es-ES')}`;
+                reservaForm.reset();
+                reservaModal.show();
             }
 
-            btnLoad.addEventListener('click', loadStatusScene);
-         });
-     </script>
-\ No newline at end of file
+            reservaForm.addEventListener('submit', function (e) {
+                e.preventDefault();
+                if (!selectedEvent) {
+                    return;
+                }
+
+                selectedEvent.setProp('title', 'Ocupado');
+                selectedEvent.setExtendedProp('estado', 'Ocupado');
+                selectedEvent.setProp('backgroundColor', '#6c757d');
+                selectedEvent.setProp('borderColor', '#6c757d');
+                selectedEvent.setProp('classNames', ['estado-no-disponible']);
+
+                reservaModal.hide();
+                selectedEvent = null;
+            });
+        });
+    </script>
 }

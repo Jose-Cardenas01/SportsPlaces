@@ -20,3 +20,19 @@ html {
 body {
   margin-bottom: 60px;
 }
+.calendar-wrapper {
+  height: 700px;
+}
+
+.estado-disponible {
+  cursor: pointer;
+  transition: filter 0.15s ease-in-out;
+}
+
+.estado-disponible:hover {
+  filter: brightness(1.08);
+}
+
+.estado-no-disponible {
+  cursor: not-allowed;
+}

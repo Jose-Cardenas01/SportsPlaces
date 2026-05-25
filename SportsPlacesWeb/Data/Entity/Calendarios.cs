@@ -14,5 +14,5 @@ namespace SportsPlacesWeb.Data.Entity
         public Guid IdEscenario { get; set; }
 
         //Navigator Propierty
-        public Escenarios Escenario { get; set; } = new Escenarios();
+        public Escenario Escenario { get; set; } = new Escenario();
     }}

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace SportsPlacesWeb.Data.Entity;
 
-public partial class Escenarios : AuditBase
+public partial class Escenario : AuditBase
 {
     public string Nombre { get; set; } = null!;
 
@@ -18,6 +18,6 @@ public partial class Escenarios : AuditBase
 
     public virtual ICollection<Reservas> Reservas { get; set; } = new List<Reservas>();
 
-    public virtual Sedes Sede { get; set; } = null!;
+    public virtual Sede Sede { get; set; } = null!;
     public virtual Calendarios Calendario { get; set; } = null!;
 }
