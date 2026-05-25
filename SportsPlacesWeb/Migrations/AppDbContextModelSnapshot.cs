@@ -45,7 +45,7 @@ namespace SportsPlacesWeb.Migrations
                     b.ToTable("Calendarios");
                 });
 
-            modelBuilder.Entity("SportsPlacesWeb.Data.Entity.Escenarios", b =>
+            modelBuilder.Entity("SportsPlacesWeb.Data.Entity.Escenario", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -84,11 +84,9 @@ namespace SportsPlacesWeb.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("id");
 
-                    b.Property<DateTime?>("FechaEnvio")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime")
-                        .HasColumnName("fecha_envio")
-                        .HasDefaultValueSql("(getdate())");
+                    b.Property<DateOnly>("FechaEnvio")
+                        .HasColumnType("date")
+                        .HasColumnName("fecha_envio");
 
                     b.Property<string>("Mensaje")
                         .IsRequired()
@@ -98,17 +96,14 @@ namespace SportsPlacesWeb.Migrations
                         .HasColumnName("mensaje");
 
                     b.Property<string>("TipoNotificacion")
-                        .HasMaxLength(50)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(50)")
-                        .HasColumnName("tipo_notificacion");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("UsuarioId")
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("usuario_id");
 
                     b.HasKey("Id")
-                        .HasName("PK__Notifica__3213E83FCCC02D59");
+                        .HasName("PK__Notifica__3213E83F...");
 
                     b.HasIndex("UsuarioId");
 
@@ -127,29 +122,36 @@ namespace SportsPlacesWeb.Migrations
                         .HasColumnType("varchar(max)")
                         .HasColumnName("descripcion");
 
-                    b.Property<Guid>("EspacioId")
+                    b.Property<Guid>("EscenarioId")
                         .HasColumnType("uniqueidentifier")
-                        .HasColumnName("espacio_id");
+                        .HasColumnName("escenario_id");
 
                     b.Property<string>("Estado")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(50)")
-                        .HasColumnName("estado");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<byte[]>("Evidencia")
                         .HasColumnType("varbinary(max)")
                         .HasColumnName("evidencia");
+
+                    b.Property<DateOnly>("Fecha")
+                        .HasColumnType("date")
+                        .HasColumnName("fecha");
+
+                    b.Property<Guid>("SedeId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("sede_id");
 
                     b.Property<Guid>("UsuarioId")
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("usuario_id");
 
                     b.HasKey("Id")
-                        .HasName("PK__Reportes__3213E83F8E266D26");
+                        .HasName("PK__Reportes__3213E83F...");
 
-                    b.HasIndex("EspacioId");
+                    b.HasIndex("EscenarioId");
+
+                    b.HasIndex("SedeId");
 
                     b.HasIndex("UsuarioId");
 
@@ -200,7 +202,7 @@ namespace SportsPlacesWeb.Migrations
                     b.ToTable("Reservas");
                 });
 
-            modelBuilder.Entity("SportsPlacesWeb.Data.Entity.Sedes", b =>
+            modelBuilder.Entity("SportsPlacesWeb.Data.Entity.Sede", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -209,22 +211,20 @@ namespace SportsPlacesWeb.Migrations
 
                     b.Property<string>("Direccion")
                         .IsRequired()
-                        .HasMaxLength(50)
                         .IsUnicode(false)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("varchar(max)")
                         .HasColumnName("direccion");
 
                     b.Property<string>("Nombre")
                         .IsRequired()
-                        .HasMaxLength(50)
                         .IsUnicode(false)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("varchar(max)")
                         .HasColumnName("nombre");
 
                     b.HasKey("Id")
-                        .HasName("PK__Sedes__3213E83F0D49A02B");
+                        .HasName("PK__Sede__3213E83F...");
 
-                    b.ToTable("Sedes");
+                    b.ToTable("Sedes", (string)null);
                 });
 
             modelBuilder.Entity("SportsPlacesWeb.Data.Entity.Usuario", b =>
@@ -263,7 +263,7 @@ namespace SportsPlacesWeb.Migrations
 
             modelBuilder.Entity("SportsPlacesWeb.Data.Entity.Calendarios", b =>
                 {
-                    b.HasOne("SportsPlacesWeb.Data.Entity.Escenarios", "Escenario")
+                    b.HasOne("SportsPlacesWeb.Data.Entity.Escenario", "Escenario")
                         .WithOne("Calendario")
                         .HasForeignKey("SportsPlacesWeb.Data.Entity.Calendarios", "IdEscenario")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -272,9 +272,9 @@ namespace SportsPlacesWeb.Migrations
                     b.Navigation("Escenario");
                 });
 
-            modelBuilder.Entity("SportsPlacesWeb.Data.Entity.Escenarios", b =>
+            modelBuilder.Entity("SportsPlacesWeb.Data.Entity.Escenario", b =>
                 {
-                    b.HasOne("SportsPlacesWeb.Data.Entity.Sedes", "Sede")
+                    b.HasOne("SportsPlacesWeb.Data.Entity.Sede", "Sede")
                         .WithMany("Escenarios")
                         .HasForeignKey("SedesId")
                         .IsRequired()
@@ -296,26 +296,34 @@ namespace SportsPlacesWeb.Migrations
 
             modelBuilder.Entity("SportsPlacesWeb.Data.Entity.ReportesDano", b =>
                 {
-                    b.HasOne("SportsPlacesWeb.Data.Entity.Escenarios", "Espacio")
+                    b.HasOne("SportsPlacesWeb.Data.Entity.Escenario", "Escenario")
                         .WithMany("ReportesDanos")
-                        .HasForeignKey("EspacioId")
+                        .HasForeignKey("EscenarioId")
                         .IsRequired()
-                        .HasConstraintName("FK_Reporte_Espacio");
+                        .HasConstraintName("FK_ReporteDano_Escenario");
+
+                    b.HasOne("SportsPlacesWeb.Data.Entity.Sede", "Sede")
+                        .WithMany("ReportesDano")
+                        .HasForeignKey("SedeId")
+                        .IsRequired()
+                        .HasConstraintName("FK_ReporteDano_Sede");
 
                     b.HasOne("SportsPlacesWeb.Data.Entity.Usuario", "Usuario")
-                        .WithMany("ReportesDanos")
+                        .WithMany("ReportesDano")
                         .HasForeignKey("UsuarioId")
                         .IsRequired()
-                        .HasConstraintName("FK_Reporte_Usuario");
+                        .HasConstraintName("FK_ReporteDano_Usuario");
 
-                    b.Navigation("Espacio");
+                    b.Navigation("Escenario");
+
+                    b.Navigation("Sede");
 
                     b.Navigation("Usuario");
                 });
 
             modelBuilder.Entity("SportsPlacesWeb.Data.Entity.Reservas", b =>
                 {
-                    b.HasOne("SportsPlacesWeb.Data.Entity.Escenarios", "Espacio")
+                    b.HasOne("SportsPlacesWeb.Data.Entity.Escenario", "Espacio")
                         .WithMany("Reservas")
                         .HasForeignKey("EspacioId")
                         .IsRequired()
@@ -332,7 +340,7 @@ namespace SportsPlacesWeb.Migrations
                     b.Navigation("Usuario");
                 });
 
-            modelBuilder.Entity("SportsPlacesWeb.Data.Entity.Escenarios", b =>
+            modelBuilder.Entity("SportsPlacesWeb.Data.Entity.Escenario", b =>
                 {
                     b.Navigation("Calendario")
                         .IsRequired();
@@ -342,16 +350,18 @@ namespace SportsPlacesWeb.Migrations
                     b.Navigation("Reservas");
                 });
 
-            modelBuilder.Entity("SportsPlacesWeb.Data.Entity.Sedes", b =>
+            modelBuilder.Entity("SportsPlacesWeb.Data.Entity.Sede", b =>
                 {
                     b.Navigation("Escenarios");
+
+                    b.Navigation("ReportesDano");
                 });
 
             modelBuilder.Entity("SportsPlacesWeb.Data.Entity.Usuario", b =>
                 {
                     b.Navigation("Notificaciones");
 
-                    b.Navigation("ReportesDanos");
+                    b.Navigation("ReportesDano");
 
                     b.Navigation("Reservas");
                 });

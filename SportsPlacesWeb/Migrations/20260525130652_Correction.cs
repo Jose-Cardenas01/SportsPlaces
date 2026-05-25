@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace SportsPlacesWeb.Migrations
 {
     /// <inheritdoc />
-    public partial class CalenadrEntity : Migration
+    public partial class Correction : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -16,12 +16,12 @@ namespace SportsPlacesWeb.Migrations
                 columns: table => new
                 {
                     id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    nombre = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: false),
-                    direccion = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: false)
+                    nombre = table.Column<string>(type: "varchar(max)", unicode: false, nullable: false),
+                    direccion = table.Column<string>(type: "varchar(max)", unicode: false, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK__Sedes__3213E83F0D49A02B", x => x.id);
+                    table.PrimaryKey("PK__Sede__3213E83F...", x => x.id);
                 });
 
             migrationBuilder.CreateTable(
@@ -63,13 +63,13 @@ namespace SportsPlacesWeb.Migrations
                 {
                     id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     mensaje = table.Column<string>(type: "varchar(500)", unicode: false, maxLength: 500, nullable: false),
-                    fecha_envio = table.Column<DateTime>(type: "datetime", nullable: true, defaultValueSql: "(getdate())"),
-                    tipo_notificacion = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: true),
+                    fecha_envio = table.Column<DateOnly>(type: "date", nullable: false),
+                    TipoNotificacion = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     usuario_id = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK__Notifica__3213E83FCCC02D59", x => x.id);
+                    table.PrimaryKey("PK__Notifica__3213E83F...", x => x.id);
                     table.ForeignKey(
                         name: "FK_Notificacion_Usuario",
                         column: x => x.usuario_id,
@@ -102,22 +102,29 @@ namespace SportsPlacesWeb.Migrations
                 columns: table => new
                 {
                     id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    estado = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: false),
+                    Estado = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     descripcion = table.Column<string>(type: "varchar(max)", unicode: false, nullable: true),
+                    fecha = table.Column<DateOnly>(type: "date", nullable: false),
                     evidencia = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
-                    espacio_id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    escenario_id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    sede_id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     usuario_id = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK__Reportes__3213E83F8E266D26", x => x.id);
+                    table.PrimaryKey("PK__Reportes__3213E83F...", x => x.id);
                     table.ForeignKey(
-                        name: "FK_Reporte_Espacio",
-                        column: x => x.espacio_id,
+                        name: "FK_ReporteDano_Escenario",
+                        column: x => x.escenario_id,
                         principalTable: "Escenario",
                         principalColumn: "id");
                     table.ForeignKey(
-                        name: "FK_Reporte_Usuario",
+                        name: "FK_ReporteDano_Sede",
+                        column: x => x.sede_id,
+                        principalTable: "Sedes",
+                        principalColumn: "id");
+                    table.ForeignKey(
+                        name: "FK_ReporteDano_Usuario",
                         column: x => x.usuario_id,
                         principalTable: "Usuarios",
                         principalColumn: "id");
@@ -129,7 +136,9 @@ namespace SportsPlacesWeb.Migrations
                 {
                     id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     fecha = table.Column<DateOnly>(type: "date", nullable: false),
-                    hora = table.Column<TimeOnly>(type: "time", unicode: false, maxLength: 20, nullable: false),
+                    hora_inicio = table.Column<TimeOnly>(type: "time", unicode: false, maxLength: 20, nullable: false),
+                    hora_fin = table.Column<TimeOnly>(type: "time", unicode: false, maxLength: 20, nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false),
                     espacio_id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     usuario_id = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
@@ -165,9 +174,14 @@ namespace SportsPlacesWeb.Migrations
                 column: "usuario_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ReportesDano_espacio_id",
+                name: "IX_ReportesDano_escenario_id",
                 table: "ReportesDano",
-                column: "espacio_id");
+                column: "escenario_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ReportesDano_sede_id",
+                table: "ReportesDano",
+                column: "sede_id");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ReportesDano_usuario_id",
